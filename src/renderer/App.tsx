@@ -1,50 +1,52 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import React from 'react';
+import {
+  Navigate,
+  MemoryRouter as Router,
+  Routes,
+  Route,
+} from 'react-router-dom';
+import Splash from './Splash';
+import 'gestalt/dist/gestalt.css';
 import './App.css';
+import { actions } from '../constants';
+import routePaths from './routePaths';
+import Gallery from './Gallery';
+import Photo from '../PhotoManager/Photo';
 
-const Hello = () => {
-  return (
-    <div>
-      <div className="Hello">
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
-    </div>
-  );
-};
+interface Props {}
+interface State {
+  photos: Photo[];
+}
+export default class App extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { photos: [] };
+  }
 
-export default function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Hello />} />
-      </Routes>
-    </Router>
-  );
+  componentDidMount() {
+    window.electron.ipcRenderer.on(
+      actions.FILEPATHS_OBTAINED,
+      this.handlePhotosObtained
+    );
+  }
+
+  handlePhotosObtained = (photos: Photo[]) => {
+    this.setState({ photos });
+  };
+
+  render() {
+    const { photos } = this.state;
+
+    return (
+      <Router>
+        <Routes>
+          <Route path={routePaths.SPLASH} element={<Splash />} />
+          <Route
+            path={routePaths.GALLERY}
+            element={<Gallery photos={photos} />}
+          />
+        </Routes>
+      </Router>
+    );
+  }
 }
