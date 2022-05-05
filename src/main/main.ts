@@ -12,8 +12,12 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import recursiveReadDir from 'recursive-readdir';
+import Store from 'electron-store';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import PhotoManager from '../PhotoManager/PhotoManager';
+import { actions } from '../constants';
 
 export default class AppUpdater {
   constructor() {
@@ -24,10 +28,29 @@ export default class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
+let currentDirectory;
+const photoManager = new PhotoManager();
 
-ipcMain.on('select-directory', () => {
-  console.log('on select-direcrory');
+const RecentDirectoriesKey = 'recentDirectories';
 
+const defaults = {
+  [RecentDirectoriesKey]: [],
+};
+
+const localStore = new Store({ defaults });
+
+function pushToRecentDirectories(newDirectory: string) {
+  const recentDirectories = localStore.get(RecentDirectoriesKey, []);
+
+  const updatedDirectories = [
+    newDirectory,
+    ...recentDirectories.filter((dir) => dir !== newDirectory).slice(0, 2),
+  ];
+
+  localStore.set(RecentDirectoriesKey, updatedDirectories);
+}
+
+ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
   if (mainWindow) {
     dialog
       .showOpenDialog(mainWindow, {
@@ -39,7 +62,26 @@ ipcMain.on('select-directory', () => {
           return;
         }
 
-        console.log(filePaths);
+        const selectedDirectory = filePaths[0];
+        currentDirectory = selectedDirectory;
+
+        pushToRecentDirectories(selectedDirectory);
+
+        recursiveReadDir(
+          selectedDirectory,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (_err: any, files: string[]) => {
+            // https://github.com/jergason/recursive-readdir
+            const imagePaths = files.filter((fileName) =>
+              // TODO: Update regex if additional image types are acceptable
+              /\.jpg$/.test(fileName.toLowerCase())
+            );
+
+            photoManager.initialize(imagePaths);
+
+            event.reply(actions.FILEPATHS_OBTAINED, photoManager.photos);
+          }
+        );
       })
       .catch(() => {});
   }
