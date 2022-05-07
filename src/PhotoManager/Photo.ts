@@ -1,5 +1,6 @@
 import * as path from 'path';
 import fs from 'fs';
+import parseExif, { Metadata } from './parseExif';
 
 export default class Photo {
   base64: string;
@@ -8,9 +9,16 @@ export default class Photo {
 
   filename: string;
 
+  metadata: Metadata;
+
   constructor(filePath: string) {
     this.filePath = filePath;
     this.filename = path.basename(filePath);
-    this.base64 = fs.readFileSync(filePath).toString('base64');
+
+    const fileContents = fs.readFileSync(filePath);
+
+    this.base64 = fileContents.toString('base64');
+
+    this.metadata = parseExif(fileContents.toString('binary'));
   }
 }

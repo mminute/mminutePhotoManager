@@ -6,6 +6,10 @@ interface Props {
 }
 
 export default function Gallery({ photos }: Props) {
+  const photo = photos[2];
+
+  console.log(photo);
+
   return (
     <Box color="red" height="100vh">
       <Image
@@ -13,7 +17,7 @@ export default function Gallery({ photos }: Props) {
         alt="TODO"
         naturalHeight={500}
         naturalWidth={500}
-        src={`data:image/jpg;base64,${photos[0].base64}`}
+        src={`data:image/jpg;base64,${photo.base64}`}
       />
     </Box>
   );
