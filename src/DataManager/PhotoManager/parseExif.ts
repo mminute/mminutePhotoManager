@@ -75,15 +75,27 @@ interface RawPiexif {
 }
 
 export interface Metadata {
-  Image: Record<string, any> | null;
-  GPS: Record<string, any> | null;
-  Exif: Record<string, any> | null;
+  Image: Record<string, any>;
+  GPS: Record<string, any>;
+  Exif: {
+    PixelXDimension: number | null | undefined;
+    PixelYDimension: number | null | undefined;
+  };
 }
+
+export const defaultMetadata = {
+  Image: {},
+  GPS: {},
+  Exif: {
+    PixelXDimension: null,
+    PixelYDimension: null,
+  },
+};
 
 export default function parseExif(binaryFileContent: string): Metadata {
   const rawExifData: RawPiexif = piexif.load(binaryFileContent);
 
-  const output = { Image: null, GPS: null, Exif: null };
+  const output = { ...defaultMetadata };
 
   Object.entries(rawExifData).forEach((topLevelData) => {
     const topLevelAttr = topLevelData[0];
