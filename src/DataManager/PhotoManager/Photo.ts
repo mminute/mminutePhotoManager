@@ -1,8 +1,9 @@
 import * as path from 'path';
 import fs from 'fs';
-import parseExif, { Metadata } from './parseExif';
+import getImageSize from 'image-size';
+import parseExif, { defaultMetadata, Metadata } from './parseExif';
 
-export interface PhotoData {
+interface PhotoData {
   base64: string;
   filePath: string;
   filename: string;
@@ -10,13 +11,13 @@ export interface PhotoData {
 }
 
 export default class Photo {
-  base64: string | undefined;
+  base64: string;
 
-  filePath: string | undefined;
+  filePath: string;
 
-  filename: string | undefined;
+  filename: string;
 
-  metadata: Metadata | undefined;
+  metadata: Metadata;
 
   constructor({ data, filePath }: { data?: PhotoData; filePath?: string }) {
     if (data) {
@@ -32,7 +33,27 @@ export default class Photo {
 
       this.base64 = fileContents.toString('base64');
 
-      this.metadata = parseExif(fileContents.toString('binary'));
+      const parsedMetadata = parseExif(fileContents.toString('binary'));
+
+      if (
+        !(
+          parsedMetadata.Exif.PixelXDimension &&
+          parsedMetadata.Exif.PixelXDimension
+        )
+      ) {
+        const dims = getImageSize(filePath);
+
+        parsedMetadata.Exif.PixelYDimension = dims.height;
+        parsedMetadata.Exif.PixelXDimension = dims.width;
+      }
+
+      this.metadata = parsedMetadata;
+    } else {
+      // Data passed in to constructor is either `data` or `filePath` so we should never get to this case
+      this.base64 = '';
+      this.filePath = '';
+      this.filename = '';
+      this.metadata = defaultMetadata;
     }
   }
 }

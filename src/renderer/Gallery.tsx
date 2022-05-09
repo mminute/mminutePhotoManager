@@ -1,24 +1,33 @@
-import { Box, Image } from 'gestalt';
+import { Image, Mask, Masonry } from 'gestalt';
 import Photo from '../DataManager/PhotoManager/Photo';
 
 interface Props {
   photos: Photo[];
 }
 
-export default function Gallery({ photos }: Props) {
-  const photo = photos[2];
-
-  console.log(photo);
+function PhotoRep({
+  data,
+}: {
+  data: Photo;
+  // itemIdx: number;
+  // isMeasuring: boolean;
+}) {
+  const { PixelXDimension, PixelYDimension } = data.metadata.Exif;
+  // TODO: Set alt text based on user description
 
   return (
-    <Box color="red" height="100vh">
+    <Mask rounding={4}>
       <Image
         color="transparent"
         alt="TODO"
-        naturalHeight={500}
-        naturalWidth={500}
-        src={`data:image/jpg;base64,${photo.base64}`}
+        naturalHeight={PixelYDimension || 500}
+        naturalWidth={PixelXDimension || 500}
+        src={`data:image/jpg;base64,${data.base64}`}
       />
-    </Box>
+    </Mask>
   );
+}
+
+export default function Gallery({ photos }: Props) {
+  return <Masonry comp={PhotoRep} items={photos} />;
 }

@@ -1,15 +1,9 @@
-import Photo, { PhotoData } from './Photo';
+import Photo from './Photo';
 
 export default class PhotoManager {
   photos: Photo[] = [];
 
-  initialize({
-    data,
-    imagePaths,
-  }: {
-    data: PhotoData[];
-    imagePaths: string[];
-  }) {
+  initialize({ data, imagePaths }: { data: Photo[]; imagePaths: string[] }) {
     const existingPhotoFilepaths = data.map((itm) => itm.filePath);
 
     const newPhotos = imagePaths.filter(

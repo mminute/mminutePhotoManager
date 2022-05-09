@@ -1,8 +1,8 @@
-import { PhotoData } from './PhotoManager/Photo';
+import Photo from './PhotoManager/Photo';
 import PhotoManager from './PhotoManager/PhotoManager';
 
 interface InitialData {
-  photos: PhotoData[];
+  photos: Photo[];
 }
 
 export default class DataManager {
