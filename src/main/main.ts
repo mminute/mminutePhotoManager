@@ -14,10 +14,11 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import recursiveReadDir from 'recursive-readdir';
 import Store from 'electron-store';
+import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
-import PhotoManager from '../PhotoManager/PhotoManager';
 import { actions } from '../constants';
+import DataManager from '../DataManager/DataManager';
 
 export default class AppUpdater {
   constructor() {
@@ -28,8 +29,9 @@ export default class AppUpdater {
 }
 
 let mainWindow: BrowserWindow | null = null;
-let currentDirectory;
-const photoManager = new PhotoManager();
+let currentDirectory = '';
+let dataFilePath = '';
+const dataManager = new DataManager();
 
 const RecentDirectoriesKey = 'recentDirectories';
 
@@ -68,23 +70,53 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
         pushToRecentDirectories(selectedDirectory);
 
         recursiveReadDir(
+          // https://github.com/jergason/recursive-readdir
           selectedDirectory,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (_err: any, files: string[]) => {
-            // https://github.com/jergason/recursive-readdir
             const imagePaths = files.filter((fileName) =>
               // TODO: Update regex if additional image types are acceptable
               /\.jpg$/.test(fileName.toLowerCase())
             );
 
-            photoManager.initialize(imagePaths);
+            // Find the json file where annotated image data is stored
+            const targetFilepath = files.find((fileName) => {
+              return new RegExp(`${currentDirectory}/.*.photoManager$`).test(
+                fileName
+              );
+            });
 
-            event.reply(actions.FILEPATHS_OBTAINED, photoManager.photos);
+            let dataObject = { photos: [] };
+
+            if (targetFilepath) {
+              dataFilePath = targetFilepath;
+              const rawDataString = fs.readFileSync(targetFilepath).toString();
+              dataObject = JSON.parse(rawDataString);
+            } else {
+              const filepath = `${currentDirectory}/${path.basename(
+                currentDirectory
+              )}.photoManager`;
+
+              dataFilePath = filepath;
+
+              fs.writeFileSync(filepath, JSON.stringify(dataObject));
+            }
+
+            dataManager.initialize({ data: dataObject, imagePaths });
+
+            event.reply(actions.FILEPATHS_OBTAINED, dataManager.photos);
           }
         );
       })
       .catch(() => {});
   }
+});
+
+ipcMain.on(actions.SAVE_PHOTO_MANAGER, (event) => {
+  // TODO: Write the real data to the file
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+
+  event.reply(actions.SAVE_PHOTO_MANAGER_SUCCESS);
 });
 
 if (process.env.NODE_ENV === 'production') {

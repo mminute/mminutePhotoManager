@@ -1,5 +1,5 @@
 import { Box, Image } from 'gestalt';
-import Photo from '../PhotoManager/Photo';
+import Photo from '../DataManager/PhotoManager/Photo';
 
 interface Props {
   photos: Photo[];

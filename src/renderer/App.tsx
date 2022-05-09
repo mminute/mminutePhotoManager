@@ -11,7 +11,9 @@ import './App.css';
 import { actions } from '../constants';
 import routePaths from './routePaths';
 import Gallery from './Gallery';
-import Photo from '../PhotoManager/Photo';
+import Photo from '../DataManager/PhotoManager/Photo';
+import Sidebar from './Sidebar/Sidebar';
+import PageWrapper from './PageWrapper/PageWrapper';
 
 interface Props {}
 interface State {
@@ -39,13 +41,16 @@ export default class App extends React.Component<Props, State> {
 
     return (
       <Router>
-        <Routes>
-          <Route path={routePaths.SPLASH} element={<Splash />} />
-          <Route
-            path={routePaths.GALLERY}
-            element={<Gallery photos={photos} />}
-          />
-        </Routes>
+        <Sidebar />
+        <PageWrapper>
+          <Routes>
+            <Route path={routePaths.SPLASH} element={<Splash />} />
+            <Route
+              path={routePaths.GALLERY}
+              element={<Gallery photos={photos} />}
+            />
+          </Routes>
+        </PageWrapper>
       </Router>
     );
   }
