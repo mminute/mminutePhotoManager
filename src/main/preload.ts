@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld('electron', {
       //   event.reply('ipc-example', msgTemplate('pong'));
       // });
     },
+    savePhotoManager() {
+      ipcRenderer.send('save-photo-manager');
+    },
     on(channel: string, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);

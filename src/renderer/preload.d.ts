@@ -3,6 +3,7 @@ declare global {
     electron: {
       ipcRenderer: {
         selectDirectory(): void;
+        savePhotoManager(): void;
         on(
           channel: string,
           func: (...args: unknown[]) => void
