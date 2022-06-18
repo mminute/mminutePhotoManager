@@ -1,5 +1,8 @@
 import piexif from 'piexifjs';
 import parseGPS from './parseGPS';
+import { ExifMetadata } from './types/ExifMetadata';
+import { ImageMetadata } from './types/ImageMetadata';
+import { GpsMetadata } from './types/GpsMetadata';
 
 /**
  * TOP LEVEL PIEXIFJS KEYS
@@ -73,23 +76,25 @@ interface RawPiexif {
   '1st': Record<string, Record<string, any>>;
   thumbnail: Record<string, Record<string, any>>;
 }
-
 export interface Metadata {
-  Image: Record<string, any>;
-  GPS: Record<string, any>;
-  Exif: {
-    PixelXDimension: number | null | undefined;
-    PixelYDimension: number | null | undefined;
-  };
+  Image: ImageMetadata;
+  GPS: GpsMetadata;
+  Exif: ExifMetadata | Record<string, never>; // Record<string, never> -> empty object
 }
 
 export const defaultMetadata = {
   Image: {},
-  GPS: {},
-  Exif: {
-    PixelXDimension: null,
-    PixelYDimension: null,
+  GPS: {
+    parsed: {
+      latitude: null,
+      longitude: null,
+      altitude: null,
+      direction: null,
+      speed: null,
+    },
+    raw: {},
   },
+  Exif: {},
 };
 
 export default function parseExif(binaryFileContent: string): Metadata {

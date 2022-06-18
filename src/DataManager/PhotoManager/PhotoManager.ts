@@ -1,4 +1,5 @@
 import Photo from './Photo';
+import { PhotoUpdateData } from '../../renderer/PhotoView/types';
 
 export default class PhotoManager {
   photos: Photo[] = [];
@@ -16,5 +17,16 @@ export default class PhotoManager {
       ...existingPhotos,
       ...newPhotos.map((path) => new Photo({ filePath: path })),
     ];
+  }
+
+  updatePhoto(updateData: PhotoUpdateData) {
+    // This is only called once!!!!
+    const { filepath } = updateData;
+
+    const targetPhoto = this.photos.find((p) => p.filePath === filepath);
+
+    // console.log('PhotoManager.updatePhoto', targetPhoto);
+
+    targetPhoto?.updateAnnotations(updateData.userAnnotations);
   }
 }

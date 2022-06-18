@@ -126,8 +126,14 @@ export default function parseGPS(rawGPS: Record<string, any>) {
     rawGPS[piexif.GPSIFD.GPSSpeedRef]
   );
 
+  const namedRawGps = Object.entries(rawGPS).reduce((accumulator, entry) => {
+    const [entryKey, entryValue] = entry;
+
+    return { ...accumulator, [piexif.TAGS.GPS[entryKey].name]: entryValue };
+  }, {});
+
   return {
-    raw: rawGPS,
+    raw: namedRawGps,
     parsed: { latitude, longitude, altitude, direction, speed },
   };
 }

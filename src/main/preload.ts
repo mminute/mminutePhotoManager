@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { PhotoUpdateData } from '../renderer/PhotoView/types';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -14,6 +15,9 @@ contextBridge.exposeInMainWorld('electron', {
     },
     savePhotoManager() {
       ipcRenderer.send('save-photo-manager');
+    },
+    updatePhotoData(annotationData: PhotoUpdateData) {
+      ipcRenderer.send('update-photo-data', annotationData);
     },
     on(channel: string, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>

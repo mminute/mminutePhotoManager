@@ -1,0 +1,12 @@
+@keyframes slideUp {
+	0% {
+		transform: translateY(100%);
+	}
+	100% {
+		transform: translateY(0%);
+	}
+}
+
+.toast-slide {
+  animation: slideUp 300ms;
+}
