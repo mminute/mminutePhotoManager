@@ -1,4 +1,5 @@
-export type MaybeOption = undefined | { label: string; value: string };
+export type OptionType = { label: string; value: string };
+export type MaybeOption = OptionType | undefined;
 export type OptionSetter = (newOption: MaybeOption) => void;
 export type StringSetter = (str: string) => void;
 export interface UserAnnotationUpdates {
@@ -13,6 +14,7 @@ export interface UserAnnotationUpdates {
   selectedState: MaybeOption;
   cityName: string;
   selectedCity: MaybeOption;
+  selectedPeople: string[];
 }
 export interface PhotoUpdateData {
   filepath: string;

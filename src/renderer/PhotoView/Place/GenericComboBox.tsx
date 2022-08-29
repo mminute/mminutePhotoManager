@@ -28,7 +28,6 @@ export default function GenericComboBox({
   selectedOption,
   onSelect,
 }: Props) {
-  console.log('GenericComboBox', controlledSelect);
   const suggestedOptions = searchTerm
     ? options.filter((option) =>
         option.label.toLowerCase().match(searchTerm.toLowerCase().trim())

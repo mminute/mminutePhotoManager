@@ -6,7 +6,7 @@ interface UserAnnotations {
   place: UserAnnotationPlace;
   tags: string[];
   title: string;
-  // TODO: people
+  people: string[];
 }
 
 export default class UserAnnotationData {
@@ -20,9 +20,19 @@ export default class UserAnnotationData {
 
   title: string;
 
-  constructor({ date, description, place, tags, title }: UserAnnotations) {
+  people: string[];
+
+  constructor({
+    date,
+    description,
+    people,
+    place,
+    tags,
+    title,
+  }: UserAnnotations) {
     this.date = date;
     this.description = description;
+    this.people = people;
     this.place = place;
     this.tags = tags;
     this.title = title;

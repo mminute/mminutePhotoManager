@@ -20,12 +20,9 @@ export default class PhotoManager {
   }
 
   updatePhoto(updateData: PhotoUpdateData) {
-    // This is only called once!!!!
     const { filepath } = updateData;
 
     const targetPhoto = this.photos.find((p) => p.filePath === filepath);
-
-    // console.log('PhotoManager.updatePhoto', targetPhoto);
 
     targetPhoto?.updateAnnotations(updateData.userAnnotations);
   }

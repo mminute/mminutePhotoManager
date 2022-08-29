@@ -1,9 +1,11 @@
+import { NewPersonData } from 'DataManager/PeopleManager/PeopleManager';
 import { PhotoUpdateData } from './PhotoView/types';
 
 declare global {
   interface Window {
     electron: {
       ipcRenderer: {
+        createPerson(newPerson: NewPersonData): void;
         selectDirectory(): void;
         savePhotoManager(): void;
         updatePhotoData(updatedData: PhotoUpdateData): void;

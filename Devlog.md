@@ -1,7 +1,10 @@
 # Dev Log
 
 ## TODOS:
-- Build base64 string each time since someone may have replace the photo
+- Build base64 string each time since someone may have replaced the photo
+
+### 2022-08-28
+- Able to create a person and tag them in a photo
 
 ### 2022-05-28
 - Moved UserAnnotationDisplay state up to AnnotationDataManager to make saving easier

@@ -1,111 +1,122 @@
-import { useState } from 'react';
-import {
-  Box,
-  Button,
-  ComboBox,
-  Divider,
-  Flex,
-  Heading,
-  TextArea,
-  TextField,
-} from 'gestalt';
+import { Box, Divider, Flex, TextArea, TextField } from 'gestalt';
 import DatePicker from 'gestalt-datepicker';
+import { ShowModalType } from 'renderer/types';
+import Person from 'DataManager/PeopleManager/Person';
 import Photo from '../../DataManager/PhotoManager/Photo';
 import Tags from './Tags';
 import Place from './Place/Place';
 import { MaybeOption, OptionSetter, StringSetter } from './types';
 import { PlaceType } from '../../DataManager/DataManager';
 import 'gestalt-datepicker/dist/gestalt-datepicker.css';
+import PeopleComboBox from './PeopleComboBox';
 
 export default function UserAnnotationDisplay({
-  photo,
   allTags,
-  placesMap,
   citiesMap,
-  title,
-  setTitle,
-  description,
-  setDescription,
-  tags,
-  setTags,
-  selectedDate,
-  setSelectedDate,
-  placeName,
-  setPlaceName,
-  countrySearchTerm,
-  setCountrySearchTerm,
-  selectedCountry,
-  setSelectedCountry,
-  stateSearchTerm,
-  setStateSearchTerm,
-  selectedState,
-  setSelectedState,
   cityName,
-  setCityName,
+  countrySearchTerm,
+  description,
+  onShowModal,
+  people,
+  photo,
+  placeName,
+  placesMap,
   selectedCity,
+  selectedCountry,
+  selectedDate,
+  selectedPeople,
+  selectedState,
+  setCityName,
+  setCountrySearchTerm,
+  setDescription,
+  setPlaceName,
   setSelectedCity,
+  setSelectedCountry,
+  setSelectedDate,
+  setSelectedPeople,
+  setSelectedState,
+  setStateSearchTerm,
+  setTags,
+  setTitle,
+  stateSearchTerm,
+  tags,
+  title,
 }: {
-  photo: Photo;
   allTags: string[];
-  placesMap: PlaceType[];
   citiesMap: Record<string, Record<string, string[]>>;
-  title: string;
-  setTitle: StringSetter;
-  description: string;
-  setDescription: StringSetter;
-  tags: string[];
-  setTags: (newTags: string[]) => void;
-  selectedDate: Date | undefined;
-  setSelectedDate: (newVal: Date) => void;
-  placeName: string;
-  setPlaceName: StringSetter;
-  countrySearchTerm: string;
-  setCountrySearchTerm: StringSetter;
-  selectedCountry: MaybeOption;
-  setSelectedCountry: OptionSetter;
-  stateSearchTerm: string;
-  setStateSearchTerm: StringSetter;
-  selectedState: MaybeOption;
-  setSelectedState: OptionSetter;
   cityName: string;
-  setCityName: StringSetter;
+  countrySearchTerm: string;
+  description: string;
+  onShowModal: ShowModalType;
+  people: Person[];
+  photo: Photo;
+  placeName: string;
+  placesMap: PlaceType[];
   selectedCity: MaybeOption;
+  selectedCountry: MaybeOption;
+  selectedDate: Date | undefined;
+  selectedPeople: string[];
+  selectedState: MaybeOption;
+  setCityName: StringSetter;
+  setCountrySearchTerm: StringSetter;
+  setDescription: StringSetter;
+  setPlaceName: StringSetter;
   setSelectedCity: OptionSetter;
+  setSelectedCountry: OptionSetter;
+  setSelectedDate: (newVal: Date) => void;
+  setSelectedPeople: (newPeople: string[]) => void;
+  setSelectedState: OptionSetter;
+  setStateSearchTerm: StringSetter;
+  setTags: (newTags: string[]) => void;
+  setTitle: StringSetter;
+  stateSearchTerm: string;
+  tags: string[];
+  title: string;
 }) {
   const options = allTags.map((tagTerm) => ({
     label: tagTerm,
     value: tagTerm,
   }));
 
-  const [tagSearchTerm, setTagSearchTerm] = useState('');
-
   return (
     <Box marginBottom={12}>
-      <TextField
-        id="title"
-        onChange={({ value }) => setTitle(value)}
-        label="Title"
-        value={title}
-      />
-      <TextArea
-        id="description"
-        onChange={({ value }) => setDescription(value)}
-        label="Description"
-        value={description}
-      />
-      <DatePicker
-        id="datepicker"
-        onChange={({ value }) => setSelectedDate(value)}
-        label="Date"
-        value={selectedDate}
-      />
-      <Tags
-        options={options}
-        searchTerm={tagSearchTerm}
-        setSearchTerm={setTagSearchTerm}
-        tags={tags}
-        setTags={setTags}
-      />
+      <Flex direction="column" gap={4}>
+        <TextField
+          id="title"
+          onChange={({ value }) => setTitle(value)}
+          label="Title"
+          value={title}
+        />
+        <TextArea
+          id="description"
+          onChange={({ value }) => setDescription(value)}
+          label="Description"
+          value={description}
+        />
+        <DatePicker
+          id="datepicker"
+          onChange={({ value }) => setSelectedDate(value)}
+          label="Date"
+          value={selectedDate}
+        />
+        <Tags
+          helperText="Search and select from existing tags. Enter text and press tab to add a new tag"
+          inputId="tags"
+          inputLabel="Tags"
+          noResultText="No tags found"
+          options={options}
+          setTags={setTags}
+          tags={tags}
+        />
+
+        <PeopleComboBox
+          onShowModal={onShowModal}
+          people={people}
+          selectedPeople={selectedPeople}
+          setSelectedPeople={setSelectedPeople}
+        />
+      </Flex>
+
       <Box marginTop={8}>
         <Divider />
       </Box>
