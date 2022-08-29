@@ -61,20 +61,21 @@ export default class Photo {
       this.metadata = parsedMetadata;
 
       this.userAnnotations = new UserAnnotationData({
-        title: '',
+        date:
+          parsedMetadata.Image.DateTime ||
+          parsedMetadata.GPS.raw.GPSDateStamp ||
+          parsedMetadata.Exif.DateTimeOriginal ||
+          '',
         description: '',
-        tags: [],
+        people: [],
         place: {
           name: '',
           country: { value: null, label: '' },
           stateProvince: { value: null, label: '' },
           city: '',
         },
-        date:
-          parsedMetadata.Image.DateTime ||
-          parsedMetadata.GPS.raw.GPSDateStamp ||
-          parsedMetadata.Exif.DateTimeOriginal ||
-          '',
+        tags: [],
+        title: '',
       });
     } else {
       // Data passed in to constructor is either `data` or `filePath` so we should never get to this case
@@ -83,16 +84,17 @@ export default class Photo {
       this.filename = '';
       this.metadata = defaultMetadata;
       this.userAnnotations = new UserAnnotationData({
-        title: '',
         date: '',
         description: '',
-        tags: [],
+        people: [],
         place: {
           name: '',
           country: { value: null, label: '' },
           stateProvince: { value: null, label: '' },
           city: '',
         },
+        tags: [],
+        title: '',
       });
     }
   }
@@ -105,6 +107,7 @@ export default class Photo {
       placeName,
       selectedCountry,
       selectedDate,
+      selectedPeople,
       selectedState,
       stateSearchTerm,
       tags,
@@ -112,18 +115,19 @@ export default class Photo {
     } = annotationData;
 
     this.userAnnotations = new UserAnnotationData({
-      title,
-      description,
       date:
         selectedDate?.toISOString().slice(0, 10).replace(/-/g, '/') ||
         this.userAnnotations.date,
-      tags,
+      description,
+      people: selectedPeople,
       place: {
         name: placeName,
         country: selectedCountry || { value: null, label: countrySearchTerm },
         stateProvince: selectedState || { value: null, label: stateSearchTerm },
         city: cityName,
       },
+      title,
+      tags,
     });
   }
 }

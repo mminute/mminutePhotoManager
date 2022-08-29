@@ -1,6 +1,9 @@
-import Photo, { UserAnnotationPlace } from './PhotoManager/Photo';
+import Photo from './PhotoManager/Photo';
 import PhotoManager from './PhotoManager/PhotoManager';
+import UserAnnotationPlace from './PhotoManager/UserAnnotationPlace';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
+import PeopleManager, { NewPersonData } from './PeopleManager/PeopleManager';
+import Person from './PeopleManager/Person';
 
 export type MaybeString = string | null;
 
@@ -49,6 +52,7 @@ function pushUniquePlace(places: PlaceType[], newPlace: PlaceType) {
 
 interface InitialData {
   photos: Photo[];
+  people: Person[];
 }
 
 export default class DataManager {
@@ -56,6 +60,8 @@ export default class DataManager {
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes/Private_class_fields
 
   #initialized = false;
+
+  #peopleManager = new PeopleManager();
 
   #photoManager = new PhotoManager();
 
@@ -76,7 +82,7 @@ export default class DataManager {
     if (!this.#initialized) {
       this.#initialized = true;
 
-      const { photos: dataPhotos } = data;
+      const { photos: dataPhotos, people: dataPeople } = data;
 
       let tags: string[] = [];
       const places: PlaceType[] = [];
@@ -98,6 +104,7 @@ export default class DataManager {
       this.#citiesMap = citiesMap;
 
       this.#photoManager.initialize({ data: dataPhotos, imagePaths });
+      this.#peopleManager.initialize(dataPeople);
     }
   }
 
@@ -117,12 +124,15 @@ export default class DataManager {
     return this.#citiesMap;
   }
 
+  get people() {
+    return this.#peopleManager.people;
+  }
+
   get state() {
     return { photos: this.photos };
   }
 
   updatePhoto(annotationData: PhotoUpdateData) {
-    console.log('DataManager.updatePhoto');
     this.#photoManager.updatePhoto(annotationData);
 
     const updatedPlace = {
@@ -145,5 +155,9 @@ export default class DataManager {
     this.#tags = [
       ...new Set([...this.#tags, ...annotationData.userAnnotations.tags]),
     ];
+  }
+
+  createPerson(personData: NewPersonData) {
+    this.#peopleManager.createPerson(personData);
   }
 }

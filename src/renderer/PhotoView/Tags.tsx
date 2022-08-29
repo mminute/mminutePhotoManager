@@ -2,20 +2,26 @@ import { useState } from 'react';
 import { ComboBox, Tag } from 'gestalt';
 
 interface Props {
+  helperText: string;
+  inputId: string;
+  inputLabel: string;
+  noResultText: string;
   options: { label: string; value: string }[];
-  searchTerm: string;
-  setSearchTerm: (searchTerm: string) => void;
-  tags: string[];
   setTags: (newTags: string[]) => void;
+  tags: string[];
 }
 
 export default function Tags({
+  helperText,
+  inputId,
+  inputLabel,
+  noResultText,
   options,
-  searchTerm,
-  setSearchTerm,
-  tags,
   setTags,
+  tags,
 }: Props) {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const [suggestedOptions, setSuggestedOptions] = useState(
     options.filter((tagTerm) => !tags.includes(tagTerm.value))
   );
@@ -91,7 +97,7 @@ export default function Tags({
     <Tag
       key={tagTerm}
       onRemove={() => handleRemoveTag(tagTerm)}
-      removeIconAccessibilityLabel={`Remove ${tagTerm} tag`}
+      removeIconAccessibilityLabel={`Remove ${tagTerm}`}
       text={tagTerm}
     />
   ));
@@ -99,11 +105,11 @@ export default function Tags({
   return (
     <ComboBox
       accessibilityClearButtonLabel="Clear"
-      helperText="Search and select from existing tags. Enter text and press tab to add a new tag"
-      id="tags"
+      helperText={helperText}
+      id={inputId}
       inputValue={searchTerm}
-      label="Tags"
-      noResultText="No tags found"
+      label={inputLabel}
+      noResultText={noResultText}
       onBlur={handleOnBlur}
       onChange={handleOnChange}
       onClear={handleClear}

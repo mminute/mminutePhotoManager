@@ -86,7 +86,7 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
               );
             });
 
-            let dataObject = { photos: [] };
+            let dataObject = { photos: [], people: [] };
 
             if (targetFilepath) {
               dataFilePath = targetFilepath;
@@ -109,7 +109,8 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
               dataManager.photos,
               dataManager.tags,
               dataManager.placesMap,
-              dataManager.citiesMap
+              dataManager.citiesMap,
+              dataManager.people
             );
           }
         );
@@ -127,19 +128,19 @@ ipcMain.on(actions.SAVE_PHOTO_MANAGER, (event) => {
 ipcMain.on(actions.UPDATE_PHOTO_DATA, (event, annotationData) => {
   dataManager.updatePhoto(annotationData);
 
-  // All the photos have had their place updated
-  console.log(
-    'actions.UPDATE_PHOTO_DATA',
-    dataManager.photos.map((p) => p.userAnnotations.place)
-  );
-
   event.reply(
     actions.UPDATE_PHOTO_DATA_COMPLETE,
     dataManager.photos,
     dataManager.tags,
     dataManager.placesMap,
-    dataManager.citiesMap
+    dataManager.citiesMap,
+    dataManager.people
   );
+});
+
+ipcMain.on(actions.CREATE_PERSON, (event, personData) => {
+  dataManager.createPerson(personData);
+  event.reply(actions.CREATE_PERSON_SUCCESS, dataManager.people);
 });
 
 if (process.env.NODE_ENV === 'production') {

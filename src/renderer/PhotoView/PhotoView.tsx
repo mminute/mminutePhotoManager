@@ -1,6 +1,8 @@
 import { Box, Button, Divider, IconButton, Image, Tabs } from 'gestalt';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShowModalType } from 'renderer/types';
+import Person from 'DataManager/PeopleManager/Person';
 import Photo from '../../DataManager/PhotoManager/Photo';
 import { routePaths } from '../routePaths';
 import GpsMetadataDisplay from './GpsMetadataDisplay';
@@ -18,6 +20,8 @@ interface Props {
   allTags: string[];
   placesMap: PlaceType[];
   citiesMap: Record<string, Record<string, string[]>>;
+  onShowModal: ShowModalType;
+  people: Person[];
 }
 
 const tabs = [
@@ -39,10 +43,12 @@ function getPanelHeights(dataPanelHeight: number) {
 }
 
 export default function PhotoView({
-  photo,
   allTags,
-  placesMap,
   citiesMap,
+  onShowModal,
+  people,
+  photo,
+  placesMap,
 }: Props) {
   const [tabIndex, setTabIndex] = useState(0);
   const navigate = useNavigate();
@@ -98,6 +104,8 @@ export default function PhotoView({
         setCityName,
         selectedCity,
         setSelectedCity,
+        selectedPeople,
+        setSelectedPeople,
       }) => {
         return (
           <Box height="100vh" overflow="hidden">
@@ -129,6 +137,7 @@ export default function PhotoView({
                       selectedState,
                       cityName,
                       selectedCity,
+                      selectedPeople,
                     },
                   });
 
@@ -169,32 +178,36 @@ export default function PhotoView({
                 paddingX={1}
               >
                 <SelectedComp
-                  photo={photo}
                   allTags={allTags}
-                  placesMap={placesMap}
                   citiesMap={citiesMap}
-                  title={title}
-                  setTitle={setTitle}
-                  description={description}
-                  setDescription={setDescription}
-                  tags={tags}
-                  setTags={setTags}
-                  selectedDate={selectedDate}
-                  setSelectedDate={setSelectedDate}
-                  placeName={placeName}
-                  setPlaceName={setPlaceName}
-                  countrySearchTerm={countrySearchTerm}
-                  setCountrySearchTerm={setCountrySearchTerm}
-                  selectedCountry={selectedCountry}
-                  setSelectedCountry={setSelectedCountry}
-                  stateSearchTerm={stateSearchTerm}
-                  setStateSearchTerm={setStateSearchTerm}
-                  selectedState={selectedState}
-                  setSelectedState={setSelectedState}
                   cityName={cityName}
-                  setCityName={setCityName}
+                  countrySearchTerm={countrySearchTerm}
+                  description={description}
+                  onShowModal={onShowModal}
+                  people={people}
+                  photo={photo}
+                  placeName={placeName}
+                  placesMap={placesMap}
                   selectedCity={selectedCity}
+                  selectedCountry={selectedCountry}
+                  selectedDate={selectedDate}
+                  selectedPeople={selectedPeople}
+                  selectedState={selectedState}
+                  setCityName={setCityName}
+                  setCountrySearchTerm={setCountrySearchTerm}
+                  setDescription={setDescription}
+                  setPlaceName={setPlaceName}
                   setSelectedCity={setSelectedCity}
+                  setSelectedCountry={setSelectedCountry}
+                  setSelectedDate={setSelectedDate}
+                  setSelectedPeople={setSelectedPeople}
+                  setSelectedState={setSelectedState}
+                  setStateSearchTerm={setStateSearchTerm}
+                  setTags={setTags}
+                  setTitle={setTitle}
+                  stateSearchTerm={stateSearchTerm}
+                  tags={tags}
+                  title={title}
                 />
               </Box>
             </Box>

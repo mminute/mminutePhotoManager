@@ -1,16 +1,5 @@
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  ComboBox,
-  Divider,
-  Flex,
-  Heading,
-  TextArea,
-  TextField,
-  Spinner,
-  Toast,
-} from 'gestalt';
+import { Box, Button, Flex, Heading, Spinner, Toast } from 'gestalt';
 import countries from 'iso3166-2-db/i18n/dispute/UN/en';
 import GenericComboBox from './GenericComboBox';
 import { PlaceType } from '../../../DataManager/DataManager';

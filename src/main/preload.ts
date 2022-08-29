@@ -1,8 +1,12 @@
+import { NewPersonData } from 'DataManager/PeopleManager/PeopleManager';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
+    createPerson(personData: NewPersonData) {
+      ipcRenderer.send('create-person', personData);
+    },
     selectDirectory() {
       ipcRenderer.send('select-directory');
       // ipcRenderer.send('selec-directory', 'ping');
