@@ -40,7 +40,7 @@ export default class Splash extends React.Component<Props, State> {
     const { shouldRedirect } = this.state;
 
     if (shouldRedirect) {
-      return <Navigate to={routePaths.GALLERY} />;
+      return <Navigate to={routePaths.PHOTOS} />;
     }
 
     return (

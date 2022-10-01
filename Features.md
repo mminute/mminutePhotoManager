@@ -1,0 +1,34 @@
+# Features
+- [x] Select a directory
+  - [ ] Remember past directory selections for quick select
+- [x] View photos in the directory
+- [x] View a photo
+  - [x] View photo metadata
+    - [x] Image
+      - camera make/model, resolution, etc
+    - [x] GPS
+      - Lat/Long/Altitude etc. Google maps link
+    - [x] Exif
+      - exposure info
+- [x] Add annotations
+  - [x] Title
+  - [x] Description
+  - [x] Date (Populate from exif data)
+  - [x] Tags
+  - [x] People
+  - [x] Place
+- [ ] Edit people
+- [ ] Filter and search
+  - [ ] Location
+  - [ ] Tags
+  - [ ] People
+  - [ ] Title
+  - [ ] Description
+  - [ ] Date/Date range
+- [ ] Folder/File tree
+- [ ] Bulk actions
+  - [ ] Select/Unselect
+  - [ ] Export
+  - [ ] Edit
+  - [ ] Move
+  - [ ] Delete

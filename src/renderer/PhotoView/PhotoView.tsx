@@ -54,7 +54,7 @@ export default function PhotoView({
   const navigate = useNavigate();
 
   if (!photo) {
-    navigate(routePaths.GALLERY);
+    navigate(routePaths.PHOTOS);
     return null;
   }
 
@@ -114,7 +114,7 @@ export default function PhotoView({
                 accessibilityLabel="Back to gallery"
                 iconColor="darkGray"
                 icon="cancel"
-                onClick={() => navigate(routePaths.GALLERY)}
+                onClick={() => navigate(routePaths.PHOTOS)}
               />
             </Box>
 
@@ -141,7 +141,7 @@ export default function PhotoView({
                     },
                   });
 
-                  navigate(routePaths.GALLERY);
+                  navigate(routePaths.PHOTOS);
                 }}
               />
             </Box>

@@ -1,7 +1,8 @@
 export const routePaths = {
-  SPLASH: '/',
-  GALLERY: '/gallery',
+  PEOPLE: '/people',
   PHOTO: '/photo',
+  PHOTOS: '/photos',
+  SPLASH: '/',
 };
 
 export const CollapsedSidebarRoutes = [routePaths.PHOTO];

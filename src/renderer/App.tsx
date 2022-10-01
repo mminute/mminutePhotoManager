@@ -1,18 +1,20 @@
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
+import { Box } from 'gestalt';
 import Person from '../DataManager/PeopleManager/Person';
 import Splash from './Splash';
 import 'gestalt/dist/gestalt.css';
 import './App.css';
 import { actions } from '../constants';
 import { routePaths } from './routePaths';
-import Gallery from './Gallery';
+import PhotoGallery from './PhotoGallery';
 import Photo from '../DataManager/PhotoManager/Photo';
 import Sidebar from './Sidebar/Sidebar';
 import PageWrapper from './PageWrapper/PageWrapper';
 import PhotoView from './PhotoView/PhotoView';
 import { PlaceType } from '../DataManager/DataManager';
 import CreatePersonModal from './CreatePersonModal';
+import PeopleView from './PeopleView';
 
 interface Props {}
 interface State {
@@ -111,9 +113,9 @@ export default class App extends React.Component<Props, State> {
             <Routes>
               <Route path={routePaths.SPLASH} element={<Splash />} />
               <Route
-                path={routePaths.GALLERY}
+                path={routePaths.PHOTOS}
                 element={
-                  <Gallery
+                  <PhotoGallery
                     photos={photos}
                     onSelectPhoto={this.handleSelectPhoto}
                   />
@@ -133,6 +135,10 @@ export default class App extends React.Component<Props, State> {
                     placesMap={placesMap}
                   />
                 }
+              />
+              <Route
+                path={routePaths.PEOPLE}
+                element={<PeopleView people={people} />}
               />
             </Routes>
           </PageWrapper>
