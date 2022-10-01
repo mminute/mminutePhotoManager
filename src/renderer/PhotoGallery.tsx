@@ -1,6 +1,8 @@
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Image, Mask, Masonry, TapArea } from 'gestalt';
+import { Box, FixedZIndex, Image, Mask, Masonry, TapArea } from 'gestalt';
 import Photo from '../DataManager/PhotoManager/Photo';
+import GalleryTabs from './GalleryTabs';
 import routePaths from './routePaths';
 
 interface Props {
@@ -38,11 +40,41 @@ function PhotoRep({
   );
 }
 
-export default function Gallery({ photos, onSelectPhoto }: Props) {
+export default function PhotoGallery({ photos, onSelectPhoto }: Props) {
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [tabsHeight, setTabsHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    setTabsHeight(tabsRef.current?.clientHeight || 0);
+  }, []);
+
   // PhotoComp props object: { data, itemIdx, isMeasuring }
   const PhotoComp = ({ data }: { data: Photo }) => (
     <PhotoRep data={data} onSelect={onSelectPhoto} />
   );
 
-  return <Masonry comp={PhotoComp} items={photos} />;
+  return (
+    <>
+      <Box
+        color="white"
+        display="flex"
+        justifyContent="center"
+        position="fixed"
+        ref={tabsRef}
+        width="100%"
+        zIndex={new FixedZIndex(10)}
+      >
+        <GalleryTabs activeTab="Photos" />
+      </Box>
+      {tabsHeight && (
+        <Box
+          dangerouslySetInlineStyle={{
+            __style: { paddingTop: `${tabsHeight}px` },
+          }}
+        >
+          <Masonry comp={PhotoComp} items={photos} />
+        </Box>
+      )}
+    </>
+  );
 }
