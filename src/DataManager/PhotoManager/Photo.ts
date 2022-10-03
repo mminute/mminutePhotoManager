@@ -34,7 +34,7 @@ export default class Photo {
       this.filePath = data.filePath;
       this.filename = data.filename;
       this.metadata = data.metadata;
-      this.userAnnotations = data.userAnnotations;
+      this.userAnnotations = new UserAnnotationData(data.userAnnotations);
     } else if (filePath) {
       this.filePath = filePath;
       this.filename = path.basename(filePath);
@@ -129,5 +129,9 @@ export default class Photo {
       title,
       tags,
     });
+  }
+
+  deletePerson(targetId: string) {
+    this.userAnnotations.deletePerson(targetId);
   }
 }

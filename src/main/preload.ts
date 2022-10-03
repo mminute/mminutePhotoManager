@@ -7,6 +7,12 @@ contextBridge.exposeInMainWorld('electron', {
     createPerson(personData: NewPersonData) {
       ipcRenderer.send('create-person', personData);
     },
+    deletePerson(targetId: string) {
+      ipcRenderer.send('delete-person', targetId);
+    },
+    updatePerson(personUpdates: NewPersonData) {
+      ipcRenderer.send('update-person', personUpdates);
+    },
     selectDirectory() {
       ipcRenderer.send('select-directory');
       // ipcRenderer.send('selec-directory', 'ping');

@@ -18,4 +18,21 @@ export default class PeopleManager {
   createPerson(newPersonData: NewPersonData) {
     this.people.push(new Person(newPersonData));
   }
+
+  updatePerson(updateData: NewPersonData) {
+    const personToUpdate = this.people.find((p) => p.id === updateData.id);
+
+    if (personToUpdate) {
+      personToUpdate.update({
+        description: updateData.description,
+        firstName: updateData.firstName,
+        lastName: updateData.lastName,
+        middleName: updateData.middleName,
+      });
+    }
+  }
+
+  deletePerson(targetId: string) {
+    this.people = this.people.filter((p) => p.id !== targetId);
+  }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { Box } from 'gestalt';
+import { CompositeZIndex, FixedZIndex, Layer } from 'gestalt';
 import Person from '../DataManager/PeopleManager/Person';
 import Splash from './Splash';
 import 'gestalt/dist/gestalt.css';
@@ -13,14 +13,16 @@ import Sidebar from './Sidebar/Sidebar';
 import PageWrapper from './PageWrapper/PageWrapper';
 import PhotoView from './PhotoView/PhotoView';
 import { PlaceType } from '../DataManager/DataManager';
-import CreatePersonModal from './CreatePersonModal';
+import PersonModal from './PersonModal';
 import PeopleView from './PeopleView';
+import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
 
 interface Props {}
 interface State {
+  activePersonId: string | null;
   activePhotoId: string | null;
   citiesMap: Record<string, Record<string, string[]>>;
-  currentModal: null | 'create-person';
+  currentModal: null | 'create-person' | 'edit-person';
   people: Person[];
   photos: Photo[];
   placesMap: PlaceType[];
@@ -30,6 +32,7 @@ export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      activePersonId: null,
       activePhotoId: null,
       citiesMap: {},
       currentModal: null,
@@ -53,7 +56,17 @@ export default class App extends React.Component<Props, State> {
 
     window.electron.ipcRenderer.on(
       actions.CREATE_PERSON_SUCCESS,
-      this.handlePersonCreated
+      this.handlePeopleUpdated
+    );
+
+    window.electron.ipcRenderer.on(
+      actions.UPDATE_PERSON_SUCCESS,
+      this.handlePeopleUpdated
+    );
+
+    window.electron.ipcRenderer.on(
+      actions.DELETE_PERSON_SUCCESS,
+      this.handlePersonDeleted
     );
   }
 
@@ -70,7 +83,22 @@ export default class App extends React.Component<Props, State> {
 
     window.electron.ipcRenderer.removeListener(
       actions.CREATE_PERSON_SUCCESS,
-      this.handlePersonCreated
+      this.handlePeopleUpdated
+    );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.UPDATE_PERSON_SUCCESS,
+      this.handlePeopleUpdated
+    );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.UPDATE_PERSON_SUCCESS,
+      this.handlePeopleUpdated
+    );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.DELETE_PERSON_SUCCESS,
+      this.handlePersonDeleted
     );
   }
 
@@ -84,7 +112,7 @@ export default class App extends React.Component<Props, State> {
     this.setState({ photos, tags, placesMap, citiesMap, people });
   };
 
-  handlePersonCreated = (people: Person[]) => {
+  handlePeopleUpdated = (people: Person[]) => {
     this.setState({ people });
   };
 
@@ -92,8 +120,18 @@ export default class App extends React.Component<Props, State> {
     this.setState({ activePhotoId: id });
   };
 
+  handleSelectPerson = (id: string) => {
+    this.setState({ activePersonId: id, currentModal: 'edit-person' });
+  };
+
+  handlePersonDeleted = (photos: Photo[], people: Person[]) => {
+    console.log('App.handlePersonDeleted', photos, people);
+    this.setState({ photos, people });
+  };
+
   render() {
     const {
+      activePersonId,
       activePhotoId,
       citiesMap,
       currentModal,
@@ -138,17 +176,36 @@ export default class App extends React.Component<Props, State> {
               />
               <Route
                 path={routePaths.PEOPLE}
-                element={<PeopleView people={people} />}
+                element={
+                  <PeopleView
+                    people={people}
+                    onSelect={this.handleSelectPerson}
+                  />
+                }
               />
             </Routes>
           </PageWrapper>
         </Router>
 
-        {currentModal === 'create-person' && (
-          <CreatePersonModal
-            existingPeople={people}
-            onDismiss={() => this.setState({ currentModal: null })}
-          />
+        {(currentModal === 'create-person' ||
+          currentModal === 'edit-person') && (
+          <Layer
+            zIndex={
+              new CompositeZIndex([new FixedZIndex(GALLERY_TABS_Z_INDEX)])
+            }
+          >
+            <PersonModal
+              existingPeople={people}
+              onDismiss={() =>
+                this.setState({ currentModal: null, activePersonId: null })
+              }
+              selectedPerson={
+                activePersonId
+                  ? people.find((p) => p.id === activePersonId)
+                  : null
+              }
+            />
+          </Layer>
         )}
       </>
     );

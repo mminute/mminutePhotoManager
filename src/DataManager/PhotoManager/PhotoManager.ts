@@ -26,4 +26,8 @@ export default class PhotoManager {
 
     targetPhoto?.updateAnnotations(updateData.userAnnotations);
   }
+
+  deletePerson(targetId: string) {
+    this.photos.forEach((p) => p.deletePerson(targetId));
+  }
 }

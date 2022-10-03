@@ -37,4 +37,8 @@ export default class UserAnnotationData {
     this.tags = tags;
     this.title = title;
   }
+
+  deletePerson(targetId: string) {
+    this.people = this.people.filter((p) => p !== targetId);
+  }
 }
