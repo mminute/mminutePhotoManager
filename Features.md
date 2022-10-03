@@ -17,7 +17,10 @@
   - [x] Tags
   - [x] People
   - [x] Place
-- [ ] Edit people
+- [x] View all people
+  - [x] Edit people
+  - [x] Delete people
+- [ ] Edit EXIF data
 - [ ] Filter and search
   - [ ] Location
   - [ ] Tags

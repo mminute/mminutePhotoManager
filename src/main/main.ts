@@ -143,6 +143,20 @@ ipcMain.on(actions.CREATE_PERSON, (event, personData) => {
   event.reply(actions.CREATE_PERSON_SUCCESS, dataManager.people);
 });
 
+ipcMain.on(actions.UPDATE_PERSON, (event, updateData) => {
+  dataManager.updatePerson(updateData);
+  event.reply(actions.UPDATE_PERSON_SUCCESS, dataManager.people);
+});
+
+ipcMain.on(actions.DELETE_PERSON, (event, targetId) => {
+  dataManager.deletePerson(targetId);
+  event.reply(
+    actions.DELETE_PERSON_SUCCESS,
+    dataManager.photos,
+    dataManager.people
+  );
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

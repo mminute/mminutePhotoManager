@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, FixedZIndex, Image, Mask, Masonry, TapArea } from 'gestalt';
 import Photo from '../DataManager/PhotoManager/Photo';
-import GalleryTabs from './GalleryTabs';
+import GalleryTabs, { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
 import routePaths from './routePaths';
 
 interface Props {
@@ -58,11 +58,12 @@ export default function PhotoGallery({ photos, onSelectPhoto }: Props) {
       <Box
         color="white"
         display="flex"
-        justifyContent="center"
+        justifyContent="start"
+        paddingX={10}
         position="fixed"
         ref={tabsRef}
         width="100%"
-        zIndex={new FixedZIndex(10)}
+        zIndex={new FixedZIndex(GALLERY_TABS_Z_INDEX)}
       >
         <GalleryTabs activeTab="Photos" />
       </Box>

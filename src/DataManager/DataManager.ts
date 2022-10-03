@@ -129,7 +129,7 @@ export default class DataManager {
   }
 
   get state() {
-    return { photos: this.photos };
+    return { photos: this.photos, people: this.people };
   }
 
   updatePhoto(annotationData: PhotoUpdateData) {
@@ -159,5 +159,14 @@ export default class DataManager {
 
   createPerson(personData: NewPersonData) {
     this.#peopleManager.createPerson(personData);
+  }
+
+  deletePerson(targetId: string) {
+    this.#photoManager.deletePerson(targetId);
+    this.#peopleManager.deletePerson(targetId);
+  }
+
+  updatePerson(updateData: NewPersonData) {
+    this.#peopleManager.updatePerson(updateData);
   }
 }

@@ -6,6 +6,8 @@ declare global {
     electron: {
       ipcRenderer: {
         createPerson(newPerson: NewPersonData): void;
+        deletePerson(targetId: string): void;
+        updatePerson(personUpdates: NewPersonData): void;
         selectDirectory(): void;
         savePhotoManager(): void;
         updatePhotoData(updatedData: PhotoUpdateData): void;
