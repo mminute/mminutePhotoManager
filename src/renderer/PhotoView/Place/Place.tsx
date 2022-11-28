@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { Box, Button, Flex, Heading, Spinner, Toast } from 'gestalt';
 import countries from 'iso3166-2-db/i18n/dispute/UN/en';
 import GenericComboBox from './GenericComboBox';
-import { PlaceType } from '../../../DataManager/DataManager';
+import { CitiesMapType, PlaceType } from '../../../DataManager/DataManager';
 import './Place.css';
 
 type Option = { label: string; value: string };
 type MaybeOption = Option | undefined;
-type CitiesMap = Record<string, Record<string, string[]>>;
-
 interface Props {
   latitude: number | null;
   longitude: number | null;
@@ -27,7 +25,7 @@ interface Props {
   setCityName: (newVal: string) => void;
   selectedCity: MaybeOption;
   setSelectedCity: (newCity: MaybeOption) => void;
-  citiesMap: CitiesMap;
+  citiesMap: CitiesMapType;
 }
 
 const countryOptions = Object.keys(countries).map((countryCode) => ({
@@ -43,7 +41,7 @@ function makeStateOptions(countryCode: string | undefined): Option[] {
 }
 
 function makeCityOptions(
-  citiesMap: CitiesMap,
+  citiesMap: CitiesMapType,
   countryCode: string | undefined,
   stateCode: string | undefined
 ): Option[] {
@@ -104,6 +102,13 @@ export default function Place({
   const handleSelectCountry = (newCountry: MaybeOption) => {
     setSelectedCountry(newCountry);
 
+    if (!newCountry) {
+      setSelectedState(undefined);
+      setStateSearchTerm('');
+      setSelectedCity(undefined);
+      setCityName('');
+    }
+
     if (
       newCountry &&
       selectedState &&
@@ -123,7 +128,13 @@ export default function Place({
   };
 
   const handleSelectState = (newState: MaybeOption) => {
+    // newState: { label: stateName, value stateName }
     setSelectedState(newState);
+
+    if (!newState) {
+      setSelectedCity(undefined);
+      setCityName('');
+    }
 
     if (
       newState &&
@@ -287,18 +298,20 @@ export default function Place({
 
         <GenericComboBox
           id="stateProvince"
+          disabled={!selectedCountry}
           label="State/Province"
           noResultText="No state/province found"
-          placeholder="Select a state/province"
-          searchTerm={stateSearchTerm}
-          setSearchTerm={setStateSearchTerm}
-          selectedOption={selectedState}
           onSelect={handleSelectState}
           options={statesOptions || []}
+          placeholder="Select a state/province"
+          searchTerm={stateSearchTerm}
+          selectedOption={selectedState}
+          setSearchTerm={setStateSearchTerm}
         />
 
         <GenericComboBox
           id="city"
+          disabled={!selectedState}
           label="City"
           noResultText="No city found"
           placeholder="Select a city"

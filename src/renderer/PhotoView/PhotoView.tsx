@@ -13,13 +13,13 @@ import {
 } from './SimpleMetadataDisplay';
 import AnnotationDataManager from './AnnotationDataManager';
 import { PhotoUpdateData } from './types';
-import { PlaceType } from '../../DataManager/DataManager';
+import { CitiesMapType, PlaceType } from '../../DataManager/DataManager';
 
 interface Props {
   photo: Photo | undefined;
   allTags: string[];
   placesMap: PlaceType[];
-  citiesMap: Record<string, Record<string, string[]>>;
+  citiesMap: CitiesMapType;
   onShowModal: ShowModalType;
   people: Person[];
 }

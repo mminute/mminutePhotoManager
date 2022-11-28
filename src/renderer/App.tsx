@@ -7,12 +7,12 @@ import 'gestalt/dist/gestalt.css';
 import './App.css';
 import { actions } from '../constants';
 import { routePaths } from './routePaths';
-import PhotoGallery from './PhotoGallery';
+import PhotoGallery from './PhotoGallery/PhotoGallery';
 import Photo from '../DataManager/PhotoManager/Photo';
 import Sidebar from './Sidebar/Sidebar';
 import PageWrapper from './PageWrapper/PageWrapper';
 import PhotoView from './PhotoView/PhotoView';
-import { PlaceType } from '../DataManager/DataManager';
+import { CitiesMapType, PlaceType } from '../DataManager/DataManager';
 import PersonModal from './PersonModal';
 import PeopleView from './PeopleView';
 import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
@@ -21,7 +21,7 @@ interface Props {}
 interface State {
   activePersonId: string | null;
   activePhotoId: string | null;
-  citiesMap: Record<string, Record<string, string[]>>;
+  citiesMap: CitiesMapType;
   currentModal: null | 'create-person' | 'edit-person';
   people: Person[];
   photos: Photo[];
@@ -125,7 +125,6 @@ export default class App extends React.Component<Props, State> {
   };
 
   handlePersonDeleted = (photos: Photo[], people: Person[]) => {
-    console.log('App.handlePersonDeleted', photos, people);
     this.setState({ photos, people });
   };
 
@@ -156,6 +155,9 @@ export default class App extends React.Component<Props, State> {
                   <PhotoGallery
                     photos={photos}
                     onSelectPhoto={this.handleSelectPhoto}
+                    placesMap={placesMap}
+                    allTags={tags}
+                    people={people}
                   />
                 }
               />

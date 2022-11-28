@@ -18,16 +18,18 @@
   - [x] People
   - [x] Place
 - [x] View all people
+  - [ ] Sort table view
   - [x] Edit people
   - [x] Delete people
 - [ ] Edit EXIF data
-- [ ] Filter and search
-  - [ ] Location
-  - [ ] Tags
-  - [ ] People
-  - [ ] Title
-  - [ ] Description
-  - [ ] Date/Date range
+- [x] Filter and search photos
+  - [x] Location
+  - [x] Tags
+  - [x] People
+  - [x] Title
+  - [x] Description
+  - [x] Date/Date range
+- [ ] Filter and search people
 - [ ] Folder/File tree
 - [ ] Bulk actions
   - [ ] Select/Unselect
@@ -35,3 +37,4 @@
   - [ ] Edit
   - [ ] Move
   - [ ] Delete
+- [ ] Update save to happen on photo/person etc level and remove the app level button
