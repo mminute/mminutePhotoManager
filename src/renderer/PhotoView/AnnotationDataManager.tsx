@@ -1,4 +1,5 @@
 import { useState, ReactElement } from 'react';
+import formatDateString from 'renderer/utils/formatDateString';
 import Photo from '../../DataManager/PhotoManager/Photo';
 import { MaybeOption, OptionSetter, StringSetter } from './types';
 
@@ -54,7 +55,10 @@ export default function AnnotationDataManager({ children, photo }: Props) {
 
   const [tags, setTags] = useState(photo.userAnnotations.tags);
 
-  const dateString = photo.userAnnotations.date.slice(0, 10).replace(/:/g, '/');
+  const dateString = formatDateString({
+    dateString: photo.userAnnotations.date,
+    delimiter: '/',
+  });
 
   const [selectedDate, setSelectedDate] = useState(
     dateString ? new Date(dateString) : undefined

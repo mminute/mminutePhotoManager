@@ -3,6 +3,7 @@ import { ComboBox } from 'gestalt';
 
 interface Props {
   controlledSelect?: boolean;
+  disabled?: boolean;
   id: string;
   label: string;
   noResultText: string;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function GenericComboBox({
   controlledSelect,
+  disabled,
   id,
   label,
   noResultText,
@@ -59,7 +61,7 @@ export default function GenericComboBox({
   return (
     <ComboBox
       accessibilityClearButtonLabel="Clear"
-      placeholder={placeholder}
+      disabled={disabled}
       id={id}
       inputValue={searchTerm}
       label={label}
@@ -68,9 +70,10 @@ export default function GenericComboBox({
       onClear={handleClear}
       onSelect={handleOnSelect}
       options={suggestedOptions}
+      placeholder={placeholder}
       selectedOption={selectedOption}
     />
   );
 }
 
-GenericComboBox.defaultProps = { controlledSelect: false };
+GenericComboBox.defaultProps = { controlledSelect: false, disabled: false };

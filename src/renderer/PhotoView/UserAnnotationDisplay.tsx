@@ -6,7 +6,7 @@ import Photo from '../../DataManager/PhotoManager/Photo';
 import Tags from './Tags';
 import Place from './Place/Place';
 import { MaybeOption, OptionSetter, StringSetter } from './types';
-import { PlaceType } from '../../DataManager/DataManager';
+import { CitiesMapType, PlaceType } from '../../DataManager/DataManager';
 import 'gestalt-datepicker/dist/gestalt-datepicker.css';
 import PeopleComboBox from './PeopleComboBox';
 
@@ -43,7 +43,7 @@ export default function UserAnnotationDisplay({
   title,
 }: {
   allTags: string[];
-  citiesMap: Record<string, Record<string, string[]>>;
+  citiesMap: CitiesMapType;
   cityName: string;
   countrySearchTerm: string;
   description: string;

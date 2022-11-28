@@ -7,7 +7,7 @@ import Person from './PeopleManager/Person';
 
 export type MaybeString = string | null;
 
-type CitiesMap = Record<string, Record<string, string[]>>;
+export type CitiesMapType = Record<string, Record<string, string[]>>;
 export type PlaceType = {
   name: string;
   countryCode: MaybeString;
@@ -15,7 +15,7 @@ export type PlaceType = {
   city: MaybeString;
 };
 
-function updateCitiesMap(place: UserAnnotationPlace, citiesMap: CitiesMap) {
+function updateCitiesMap(place: UserAnnotationPlace, citiesMap: CitiesMapType) {
   if (place.country.value && place.stateProvince.value && place.city) {
     const objectOfStates = citiesMap[place.country.value] || {};
     const arrOfCities = objectOfStates[place.stateProvince.value] || [];
@@ -69,7 +69,7 @@ export default class DataManager {
 
   #placesMap: PlaceType[] = [];
 
-  #citiesMap: Record<string, Record<string, string[]>> = {};
+  #citiesMap: CitiesMapType = {};
 
   initialize({
     data,

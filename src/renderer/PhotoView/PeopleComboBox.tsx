@@ -2,12 +2,7 @@ import { useEffect, useState } from 'react';
 import { Box, ComboBox, IconButton, Tag } from 'gestalt';
 import { ShowModalType } from 'renderer/types';
 import Person from 'DataManager/PeopleManager/Person';
-
-function makeName(person: Person) {
-  return [person.firstName, person.middleName, person.lastName]
-    .filter(Boolean)
-    .join(' ');
-}
+import makePersonName from 'renderer/utils/makePersonName';
 
 interface Props {
   onShowModal: ShowModalType;
@@ -23,7 +18,7 @@ export default function PeopleComboBox({
   selectedPeople,
 }: Props) {
   const peopleOptions = people.map((person) => ({
-    label: makeName(person),
+    label: makePersonName(person),
     value: person.id,
   }));
 
@@ -116,7 +111,7 @@ export default function PeopleComboBox({
 
   const renderedTags = selectedPeopleObjects.map((personData) => {
     const { id: personId } = personData;
-    const personName = makeName(personData);
+    const personName = makePersonName(personData);
 
     return (
       <Tag
