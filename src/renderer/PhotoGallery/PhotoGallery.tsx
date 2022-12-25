@@ -17,6 +17,7 @@ import routePaths from '../routePaths';
 import PhotoGallerySearchFilter from './PhotoGallerySearchFilter';
 
 interface Props {
+  activePath: string;
   allTags: string[];
   onSelectPhoto: (id: string) => void;
   people: Person[];
@@ -55,6 +56,7 @@ function PhotoRep({
 }
 
 export default function PhotoGallery({
+  activePath,
   allTags,
   onSelectPhoto,
   people,
@@ -73,11 +75,15 @@ export default function PhotoGallery({
     <PhotoRep data={data} onSelect={onSelectPhoto} />
   );
 
+  const activePathPhotos = photos.filter((p) =>
+    p.filePath.startsWith(activePath)
+  );
+
   return (
     <PhotoGallerySearchFilter
       allTags={allTags}
       people={people}
-      photos={photos}
+      photos={activePathPhotos}
       placesMap={placesMap}
     >
       {({ filteredPhotos, isFiltering, onOpenFilters }) => (

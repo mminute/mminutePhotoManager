@@ -3,7 +3,7 @@
 ## TODOS:
 - Build base64 string each time since someone may have replaced the photo
 - Remove the app level save button and update directly from photos/people etc
-- Photo filtering - What to do if there is a placename that appears multiple times for different country/state/cities?
+- Photo filtering - What to do if there is a place name that appears multiple times for different country/state/cities?
 
 ### 2022-11-27
 - Added moment.js to handle date comparison
