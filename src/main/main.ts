@@ -110,7 +110,8 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
               dataManager.tags,
               dataManager.placesMap,
               dataManager.citiesMap,
-              dataManager.people
+              dataManager.people,
+              currentDirectory
             );
           }
         );

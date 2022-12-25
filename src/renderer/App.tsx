@@ -16,13 +16,17 @@ import { CitiesMapType, PlaceType } from '../DataManager/DataManager';
 import PersonModal from './PersonModal';
 import PeopleView from './PeopleView';
 import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
+import buildFileTree, { DirectoryData } from './utils/buildFileTree';
 
 interface Props {}
 interface State {
+  activePath: string;
   activePersonId: string | null;
   activePhotoId: string | null;
   citiesMap: CitiesMapType;
+  currentDirectory: string;
   currentModal: null | 'create-person' | 'edit-person';
+  fileTree: DirectoryData[];
   people: Person[];
   photos: Photo[];
   placesMap: PlaceType[];
@@ -32,10 +36,13 @@ export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      activePath: '',
       activePersonId: null,
       activePhotoId: null,
       citiesMap: {},
+      currentDirectory: '',
       currentModal: null,
+      fileTree: [],
       people: [],
       photos: [],
       placesMap: [],
@@ -46,7 +53,7 @@ export default class App extends React.Component<Props, State> {
   componentDidMount() {
     window.electron.ipcRenderer.on(
       actions.FILEPATHS_OBTAINED,
-      this.handlePhotosObtained
+      this.handleFilepathsObtained
     );
 
     window.electron.ipcRenderer.on(
@@ -73,7 +80,7 @@ export default class App extends React.Component<Props, State> {
   componentWillUnmount() {
     window.electron.ipcRenderer.removeListener(
       actions.FILEPATHS_OBTAINED,
-      this.handlePhotosObtained
+      this.handleFilepathsObtained
     );
 
     window.electron.ipcRenderer.removeListener(
@@ -101,6 +108,22 @@ export default class App extends React.Component<Props, State> {
       this.handlePersonDeleted
     );
   }
+
+  handleFilepathsObtained = (
+    photos: Photo[],
+    tags: string[],
+    placesMap: PlaceType[],
+    citiesMap: Record<string, Record<string, string[]>>,
+    people: Person[],
+    currentDirectory: string
+  ) => {
+    this.setState({
+      activePath: currentDirectory,
+      currentDirectory,
+      fileTree: buildFileTree(photos, currentDirectory),
+    });
+    this.handlePhotosObtained(photos, tags, placesMap, citiesMap, people);
+  };
 
   handlePhotosObtained = (
     photos: Photo[],
@@ -130,10 +153,13 @@ export default class App extends React.Component<Props, State> {
 
   render() {
     const {
+      activePath,
       activePersonId,
       activePhotoId,
       citiesMap,
+      currentDirectory,
       currentModal,
+      fileTree,
       people,
       photos,
       placesMap,
@@ -145,7 +171,14 @@ export default class App extends React.Component<Props, State> {
     return (
       <>
         <Router>
-          <Sidebar />
+          <Sidebar
+            activePath={activePath}
+            updateActivePath={(newPath: string) =>
+              this.setState({ activePath: newPath })
+            }
+            currentDirectory={currentDirectory}
+            fileTree={fileTree}
+          />
           <PageWrapper>
             <Routes>
               <Route path={routePaths.SPLASH} element={<Splash />} />
@@ -153,6 +186,7 @@ export default class App extends React.Component<Props, State> {
                 path={routePaths.PHOTOS}
                 element={
                   <PhotoGallery
+                    activePath={activePath}
                     photos={photos}
                     onSelectPhoto={this.handleSelectPhoto}
                     placesMap={placesMap}
