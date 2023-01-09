@@ -5,6 +5,12 @@
 - Remove the app level save button and update directly from photos/people etc
 - Photo filtering - What to do if there is a place name that appears multiple times for different country/state/cities?
 
+### 2023-01-08
+- Added multi select logic
+
+### 2022-12-24
+- Add selectable file tree
+
 ### 2022-11-27
 - Added moment.js to handle date comparison
   - [website](https://momentjs.com/)

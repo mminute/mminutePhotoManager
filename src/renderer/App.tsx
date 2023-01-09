@@ -23,6 +23,7 @@ interface State {
   activePath: string;
   activePersonId: string | null;
   activePhotoId: string | null;
+  bulkSelections: string[];
   citiesMap: CitiesMapType;
   currentDirectory: string;
   currentModal: null | 'create-person' | 'edit-person';
@@ -39,6 +40,7 @@ export default class App extends React.Component<Props, State> {
       activePath: '',
       activePersonId: null,
       activePhotoId: null,
+      bulkSelections: [],
       citiesMap: {},
       currentDirectory: '',
       currentModal: null,
@@ -151,11 +153,36 @@ export default class App extends React.Component<Props, State> {
     this.setState({ photos, people });
   };
 
+  handleUpdateBulkSelection = ({
+    action,
+    ids,
+  }: {
+    action: 'add' | 'clear' | 'remove';
+    ids?: string[];
+  }) => {
+    const { bulkSelections } = this.state;
+
+    let updatedData = bulkSelections;
+
+    if (action === 'add' && ids?.length) {
+      updatedData = [...updatedData, ...ids];
+    } else if (action === 'remove' && ids?.length) {
+      updatedData = bulkSelections.filter(
+        (selected) => !ids.includes(selected)
+      );
+    } else if (action === 'clear') {
+      updatedData = [];
+    }
+
+    this.setState({ bulkSelections: updatedData });
+  };
+
   render() {
     const {
       activePath,
       activePersonId,
       activePhotoId,
+      bulkSelections,
       citiesMap,
       currentDirectory,
       currentModal,
@@ -187,8 +214,10 @@ export default class App extends React.Component<Props, State> {
                 element={
                   <PhotoGallery
                     activePath={activePath}
+                    bulkSelections={bulkSelections}
                     photos={photos}
                     onSelectPhoto={this.handleSelectPhoto}
+                    onUpdateBulkSelection={this.handleUpdateBulkSelection}
                     placesMap={placesMap}
                     allTags={tags}
                     people={people}

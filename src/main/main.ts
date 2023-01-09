@@ -76,6 +76,9 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
           (_err: any, files: string[]) => {
             const imagePaths = files.filter((fileName) =>
               // TODO: Update regex if additional image types are acceptable
+              // Digital cameras typically produce .jpg, .raw, .tiff files
+              // Looks like you might be able to use .raw and .tiff by
+              // setting the 'src' to the file
               /\.jpg$/.test(fileName.toLowerCase())
             );
 
