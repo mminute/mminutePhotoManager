@@ -30,9 +30,9 @@
   - [x] Description
   - [x] Date/Date range
 - [ ] Filter and search people
-- [ ] Folder/File tree
+- [x] Folder/File tree
 - [ ] Bulk actions
-  - [ ] Select/Unselect
+  - [x] Select/Unselect
   - [ ] Export
   - [ ] Edit
   - [ ] Move
