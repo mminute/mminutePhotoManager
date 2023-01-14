@@ -28,6 +28,7 @@ interface Props {
   activePath: string;
   allTags: string[];
   bulkSelections: string[];
+  onOpenBulkActions: () => void;
   onSelectPhoto: (id: string) => void;
   onUpdateBulkSelection: BulkSelectionHandler;
   people: Person[];
@@ -100,6 +101,7 @@ export default function PhotoGallery({
   activePath,
   allTags,
   bulkSelections,
+  onOpenBulkActions,
   onSelectPhoto,
   onUpdateBulkSelection,
   people,
@@ -181,7 +183,11 @@ export default function PhotoGallery({
               )}
 
               {!!bulkSelections.length && (
-                <Button color="blue" text="Bulk actions" />
+                <Button
+                  color="blue"
+                  text="Bulk actions"
+                  onClick={() => onOpenBulkActions()}
+                />
               )}
 
               <IconButton

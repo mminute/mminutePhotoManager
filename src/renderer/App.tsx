@@ -1,10 +1,11 @@
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { CompositeZIndex, FixedZIndex, Layer } from 'gestalt';
+import { Box, CompositeZIndex, FixedZIndex, Flex, Layer, Toast } from 'gestalt';
 import Person from '../DataManager/PeopleManager/Person';
 import Splash from './Splash';
 import 'gestalt/dist/gestalt.css';
 import './App.css';
+import './Toast.css';
 import { actions } from '../constants';
 import { routePaths } from './routePaths';
 import PhotoGallery from './PhotoGallery/PhotoGallery';
@@ -17,6 +18,7 @@ import PersonModal from './PersonModal';
 import PeopleView from './PeopleView';
 import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
 import buildFileTree, { DirectoryData } from './utils/buildFileTree';
+import BulkActionsModal from './BulkActions/BulkActionsModal';
 
 interface Props {}
 interface State {
@@ -26,12 +28,13 @@ interface State {
   bulkSelections: string[];
   citiesMap: CitiesMapType;
   currentDirectory: string;
-  currentModal: null | 'create-person' | 'edit-person';
+  currentModal: null | 'create-person' | 'edit-person' | 'bulk-actions';
   fileTree: DirectoryData[];
   people: Person[];
   photos: Photo[];
   placesMap: PlaceType[];
   tags: string[];
+  toastText: string | null;
 }
 export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -49,6 +52,7 @@ export default class App extends React.Component<Props, State> {
       photos: [],
       placesMap: [],
       tags: [],
+      toastText: null,
     };
   }
 
@@ -76,6 +80,11 @@ export default class App extends React.Component<Props, State> {
     window.electron.ipcRenderer.on(
       actions.DELETE_PERSON_SUCCESS,
       this.handlePersonDeleted
+    );
+
+    window.electron.ipcRenderer.on(
+      actions.SCRUB_EXIF_DATA_SUCCES,
+      this.handleExifDataScrubbed
     );
   }
 
@@ -109,6 +118,11 @@ export default class App extends React.Component<Props, State> {
       actions.DELETE_PERSON_SUCCESS,
       this.handlePersonDeleted
     );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.SCRUB_EXIF_DATA_SUCCES,
+      this.handleExifDataScrubbed
+    );
   }
 
   handleFilepathsObtained = (
@@ -135,6 +149,15 @@ export default class App extends React.Component<Props, State> {
     people: Person[]
   ) => {
     this.setState({ photos, tags, placesMap, citiesMap, people });
+  };
+
+  handleExifDataScrubbed = (photos: Photo[]) => {
+    this.setState({
+      photos,
+      toastText: 'EXIF data deleted!',
+    });
+
+    setTimeout(() => this.setState({ toastText: null }), 900);
   };
 
   handlePeopleUpdated = (people: Person[]) => {
@@ -191,6 +214,7 @@ export default class App extends React.Component<Props, State> {
       photos,
       placesMap,
       tags,
+      toastText,
     } = this.state;
 
     const activePhoto = photos.find((p) => p.filePath === activePhotoId);
@@ -216,6 +240,9 @@ export default class App extends React.Component<Props, State> {
                     activePath={activePath}
                     bulkSelections={bulkSelections}
                     photos={photos}
+                    onOpenBulkActions={() =>
+                      this.setState({ currentModal: 'bulk-actions' })
+                    }
                     onSelectPhoto={this.handleSelectPhoto}
                     onUpdateBulkSelection={this.handleUpdateBulkSelection}
                     placesMap={placesMap}
@@ -252,24 +279,55 @@ export default class App extends React.Component<Props, State> {
           </PageWrapper>
         </Router>
 
-        {(currentModal === 'create-person' ||
-          currentModal === 'edit-person') && (
+        {currentModal && (
           <Layer
             zIndex={
               new CompositeZIndex([new FixedZIndex(GALLERY_TABS_Z_INDEX)])
             }
           >
-            <PersonModal
-              existingPeople={people}
-              onDismiss={() =>
-                this.setState({ currentModal: null, activePersonId: null })
-              }
-              selectedPerson={
-                activePersonId
-                  ? people.find((p) => p.id === activePersonId)
-                  : null
-              }
-            />
+            {(currentModal === 'create-person' ||
+              currentModal === 'edit-person') && (
+              <PersonModal
+                existingPeople={people}
+                onDismiss={() =>
+                  this.setState({ currentModal: null, activePersonId: null })
+                }
+                selectedPerson={
+                  activePersonId
+                    ? people.find((p) => p.id === activePersonId)
+                    : null
+                }
+              />
+            )}
+
+            {currentModal === 'bulk-actions' && (
+              <BulkActionsModal
+                bulkSelections={bulkSelections}
+                onDismiss={() => this.setState({ currentModal: null })}
+              />
+            )}
+          </Layer>
+        )}
+
+        {toastText && (
+          <Layer
+            zIndex={
+              new CompositeZIndex([new FixedZIndex(GALLERY_TABS_Z_INDEX)])
+            }
+          >
+            <Box position="fixed" bottom left right marginBottom={8}>
+              <div
+                className="toast-slide"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  marginBottom: window.innerHeight / 2 - 72,
+                }}
+              >
+                <Toast text={toastText} />
+              </div>
+            </Box>
           </Layer>
         )}
       </>

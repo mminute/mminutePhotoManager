@@ -29,6 +29,12 @@ contextBridge.exposeInMainWorld('electron', {
     updatePhotoData(annotationData: PhotoUpdateData) {
       ipcRenderer.send('update-photo-data', annotationData);
     },
+    scrubExifData(
+      photoIds: string[],
+      locationsToScrub: 'image-files-only' | 'image-files-and-database'
+    ) {
+      ipcRenderer.send('scrub-exif-data', photoIds, locationsToScrub);
+    },
     on(channel: string, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);

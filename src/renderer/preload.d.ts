@@ -11,6 +11,10 @@ declare global {
         selectDirectory(): void;
         savePhotoManager(): void;
         updatePhotoData(updatedData: PhotoUpdateData): void;
+        scrubExifData(
+          photoIds: string[],
+          locationsToScrub: 'image-files-only' | 'image-files-and-database'
+        ): void;
         on(
           channel: string,
           func: (...args: unknown[]) => void
