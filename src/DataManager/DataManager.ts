@@ -4,6 +4,7 @@ import UserAnnotationPlace from './PhotoManager/UserAnnotationPlace';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
 import PeopleManager, { NewPersonData } from './PeopleManager/PeopleManager';
 import Person from './PeopleManager/Person';
+import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 
 export type MaybeString = string | null;
 
@@ -168,5 +169,9 @@ export default class DataManager {
 
   updatePerson(updateData: NewPersonData) {
     this.#peopleManager.updatePerson(updateData);
+  }
+
+  scrubExifData(photoIds: string[], locationsToScrub: LocationType) {
+    this.#photoManager.scrubExifData(photoIds, locationsToScrub);
   }
 }

@@ -18,7 +18,7 @@ import {
 import { MaybeString } from 'DataManager/DataManager';
 import { GALLERY_TABS_Z_INDEX } from '../GalleryTabs';
 import VerticalFieldSet from './VerticalFieldset';
-import RadioButton from './RadioButton';
+import RadioButton from '../RadioButton';
 
 /*
   Note on <ComboBox />:

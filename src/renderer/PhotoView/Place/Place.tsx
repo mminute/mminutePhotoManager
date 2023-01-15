@@ -3,7 +3,7 @@ import { Box, Button, Flex, Heading, Spinner, Toast } from 'gestalt';
 import countries from 'iso3166-2-db/i18n/dispute/UN/en';
 import GenericComboBox from './GenericComboBox';
 import { CitiesMapType, PlaceType } from '../../../DataManager/DataManager';
-import './Place.css';
+import '../../Toast.css';
 
 type Option = { label: string; value: string };
 type MaybeOption = Option | undefined;

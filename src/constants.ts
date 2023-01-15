@@ -11,6 +11,8 @@ export const actions = {
   UPDATE_PERSON_SUCCESS: 'update-person-success',
   DELETE_PERSON: 'delete-person',
   DELETE_PERSON_SUCCESS: 'delete-person-success',
+  SCRUB_EXIF_DATA: 'scrub-exif-data',
+  SCRUB_EXIF_DATA_SUCCES: 'scrub-exif-data-success',
 };
 
 export default null;

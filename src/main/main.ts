@@ -161,6 +161,12 @@ ipcMain.on(actions.DELETE_PERSON, (event, targetId) => {
   );
 });
 
+ipcMain.on(actions.SCRUB_EXIF_DATA, (event, photoIds, locationsToScrub) => {
+  dataManager.scrubExifData(photoIds, locationsToScrub);
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+  event.reply(actions.SCRUB_EXIF_DATA_SUCCES, dataManager.photos);
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

@@ -1,5 +1,6 @@
 import Photo from './Photo';
 import { PhotoUpdateData } from '../../renderer/PhotoView/types';
+import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 
 export default class PhotoManager {
   photos: Photo[] = [];
@@ -29,5 +30,11 @@ export default class PhotoManager {
 
   deletePerson(targetId: string) {
     this.photos.forEach((p) => p.deletePerson(targetId));
+  }
+
+  scrubExifData(photoIds: string[], locationsToScrub: LocationType) {
+    this.photos
+      .filter((p) => photoIds.includes(p.filePath))
+      .forEach((p) => p.scrubExifData(locationsToScrub));
   }
 }
