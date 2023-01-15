@@ -162,7 +162,8 @@ ipcMain.on(actions.DELETE_PERSON, (event, targetId) => {
 });
 
 ipcMain.on(actions.SCRUB_EXIF_DATA, (event, photoIds, locationsToScrub) => {
-  console.log('main => on scrub-exif-data', photoIds, locationsToScrub);
+  dataManager.scrubExifData(photoIds, locationsToScrub);
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
   event.reply(actions.SCRUB_EXIF_DATA_SUCCES, dataManager.photos);
 });
 

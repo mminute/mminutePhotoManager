@@ -1,9 +1,11 @@
 import * as path from 'path';
 import fs from 'fs';
 import getImageSize from 'image-size';
+import piexif from 'piexifjs';
 import parseExif, { defaultMetadata, Metadata } from './parseExif';
 import { UserAnnotationUpdates } from '../../renderer/PhotoView/types';
 import UserAnnotationData from './UserAnnotationData';
+import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 
 interface PhotoData {
   base64: string;
@@ -15,6 +17,8 @@ interface PhotoData {
 
 export default class Photo {
   base64: string;
+
+  #binary: string;
 
   filePath: string;
 
@@ -42,8 +46,9 @@ export default class Photo {
       const fileContents = fs.readFileSync(filePath);
 
       this.base64 = fileContents.toString('base64');
+      this.#binary = fileContents.toString('binary');
 
-      const parsedMetadata = parseExif(fileContents.toString('binary'));
+      const parsedMetadata = parseExif(this.#binary);
 
       if (
         typeof parsedMetadata.Exif.PixelXDimension === 'number' &&
@@ -133,5 +138,15 @@ export default class Photo {
 
   deletePerson(targetId: string) {
     this.userAnnotations.deletePerson(targetId);
+  }
+
+  scrubExifData(locationsToScrub: LocationType) {
+    if (locationsToScrub === 'image-files-and-database') {
+      this.metadata = defaultMetadata;
+    }
+    // https://auth0.com/blog/read-edit-exif-metadata-in-photos-with-javascript/#The--Piexifjs--Library
+    const scrubbedData = piexif.remove(this.#binary);
+    const fileBuffer = Buffer.from(scrubbedData, 'binary');
+    fs.writeFileSync(this.filePath, fileBuffer);
   }
 }

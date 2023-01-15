@@ -6,7 +6,7 @@ interface Props {
   bulkSelections: string[];
 }
 
-type LocationType = 'image-files-only' | 'image-files-and-database';
+export type LocationType = 'image-files-only' | 'image-files-and-database';
 
 interface RadioButtonData {
   label: string;
