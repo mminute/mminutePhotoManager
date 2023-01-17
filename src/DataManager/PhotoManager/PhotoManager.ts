@@ -1,6 +1,16 @@
+import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
+import getImageSize from 'image-size';
+import fs from 'fs';
 import Photo from './Photo';
 import { PhotoUpdateData } from '../../renderer/PhotoView/types';
-import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
+
+function readFileSync(filePath: string): Buffer {
+  return fs.readFileSync(filePath);
+}
+
+function writeFileSync(filePath: string, fileBuffer: Buffer) {
+  fs.writeFileSync(filePath, fileBuffer);
+}
 
 export default class PhotoManager {
   photos: Photo[] = [];
@@ -12,11 +22,20 @@ export default class PhotoManager {
       (p) => !existingPhotoFilepaths.includes(p)
     );
 
-    const existingPhotos = data.map((d) => new Photo({ data: d }));
+    const fileHandlers = {
+      readFileSync,
+      writeFileSync,
+    };
+
+    const existingPhotos = data.map(
+      (d) => new Photo({ data: d, fileHandlers, getImageSize })
+    );
 
     this.photos = [
       ...existingPhotos,
-      ...newPhotos.map((path) => new Photo({ filePath: path })),
+      ...newPhotos.map(
+        (path) => new Photo({ filePath: path, fileHandlers, getImageSize })
+      ),
     ];
   }
 
