@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 import getImageSize from 'image-size';
 import fs from 'fs';
@@ -28,13 +29,25 @@ export default class PhotoManager {
     };
 
     const existingPhotos = data.map(
-      (d) => new Photo({ data: d, fileHandlers, getImageSize })
+      (d) =>
+        new Photo({
+          data: d,
+          fileHandlers,
+          getImageSize,
+          filename: path.basename(d.filePath),
+        })
     );
 
     this.photos = [
       ...existingPhotos,
       ...newPhotos.map(
-        (path) => new Photo({ filePath: path, fileHandlers, getImageSize })
+        (filePath) =>
+          new Photo({
+            filePath,
+            fileHandlers,
+            getImageSize,
+            filename: path.basename(filePath),
+          })
       ),
     ];
   }

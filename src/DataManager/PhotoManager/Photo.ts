@@ -1,4 +1,3 @@
-import * as path from 'path';
 import piexif from 'piexifjs';
 import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 import { ISizeCalculationResult } from 'image-size/dist/types/interface';
@@ -40,11 +39,13 @@ export default class Photo {
 
   constructor({
     data,
+    filename,
     filePath,
     fileHandlers,
     getImageSize,
   }: {
     data?: PhotoData;
+    filename: string;
     filePath?: string;
     fileHandlers: FileHandlers;
     getImageSize: (filepath: string) => ISizeCalculationResult;
@@ -59,7 +60,7 @@ export default class Photo {
       this.userAnnotations = new UserAnnotationData(data.userAnnotations);
     } else if (filePath) {
       this.filePath = filePath;
-      this.filename = path.basename(filePath);
+      this.filename = filename;
 
       const fileContents = this.#fileHandlers.readFileSync(filePath);
 
