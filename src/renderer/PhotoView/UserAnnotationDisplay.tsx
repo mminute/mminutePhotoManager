@@ -209,6 +209,7 @@ export default function UserAnnotationDisplay({
         setSelectedCity={setSelectedCity}
         citiesMap={citiesMap}
         placeError={placeError}
+        clearPlaceError={() => setPlaceError([])}
       />
       {/*
         Add some empty space to the bottom so that it feels

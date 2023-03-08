@@ -5,8 +5,8 @@ import GenericComboBox from './GenericComboBox';
 import { CitiesMapType, PlaceType } from '../../../DataManager/DataManager';
 import '../../Toast.css';
 import UserAnnotationPlace from '../../../DataManager/PhotoManager/UserAnnotationPlace';
-// import FieldErrorIndicator from '../FieldErrorIndicator';
-// import makeQuotedList from '../makeQuotedList';
+import FieldErrorIndicator from '../FieldErrorIndicator';
+import makeQuotedList from '../makeQuotedList';
 
 function makePlaceLabel(p: UserAnnotationPlace) {
   return [p.name, p.country.label, p.stateProvince.value, p.city]
@@ -36,6 +36,7 @@ interface Props {
   setSelectedCity: (newCity: MaybeOption) => void;
   citiesMap: CitiesMapType;
   placeError: UserAnnotationPlace[];
+  clearPlaceError: () => void;
 }
 
 const countryOptions = Object.keys(countries).map((countryCode) => ({
@@ -81,6 +82,7 @@ export default function Place({
   setSelectedCity,
   citiesMap,
   placeError,
+  clearPlaceError,
 }: Props) {
   const [waiting, setWaiting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -240,6 +242,8 @@ export default function Place({
         countryCode: foundPlace.countryCode || '',
         stateProvince: foundPlace.stateProvince || '',
       });
+
+      clearPlaceError();
     }
   };
 
@@ -247,14 +251,16 @@ export default function Place({
     setPlaceName(newVal);
   };
 
-  // const errorMessage = placeError.length ? (
-  //   <FieldErrorIndicator
-  //     detailText={`Places found: ${makeQuotedList(
-  //       placeError.map(makePlaceLabel)
-  //     )}`}
-  //     errorText="Incompatible places found"
-  //   />
-  // ) : undefined;
+  const errorMessage = placeError.length ? (
+    <FieldErrorIndicator
+      detailText={`Places found: ${makeQuotedList(
+        placeError.map(makePlaceLabel)
+      )}`}
+      errorText="Incompatible places found"
+    />
+  ) : undefined;
+
+  console.log('Place', { placeError });
 
   return (
     <>
@@ -292,7 +298,7 @@ export default function Place({
           selectedOption={undefined}
           onSelect={handleSelectPlace}
           options={placesWithLabel}
-          errorMessage={undefined}
+          errorMessage={errorMessage}
         />
 
         <Flex direction="row" gap={4} justifyContent="between" alignItems="end">
