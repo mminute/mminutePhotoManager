@@ -37,6 +37,7 @@ interface Props {
   citiesMap: CitiesMapType;
   placeError: UserAnnotationPlace[];
   clearPlaceError: () => void;
+  resetPlaceError: () => void;
 }
 
 const countryOptions = Object.keys(countries).map((countryCode) => ({
@@ -83,6 +84,7 @@ export default function Place({
   citiesMap,
   placeError,
   clearPlaceError,
+  resetPlaceError,
 }: Props) {
   const [waiting, setWaiting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -249,6 +251,12 @@ export default function Place({
 
   const handleSetSearchTerm = (newVal: string) => {
     setPlaceName(newVal);
+
+    if (newVal) {
+      clearPlaceError();
+    } else {
+      resetPlaceError();
+    }
   };
 
   const errorMessage = placeError.length ? (
