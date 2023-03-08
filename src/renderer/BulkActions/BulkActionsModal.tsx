@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Box, Button, Column, Flex, Modal, SelectList } from 'gestalt';
+import { CitiesMapType, PlaceType } from 'DataManager/DataManager';
+import Person from 'DataManager/PeopleManager/Person';
 import Edit from './Edit/Edit';
+import Photo from 'DataManager/PhotoManager/Photo';
 
 function Footer({ onDismiss }: { onDismiss: () => void }) {
   return (
@@ -59,11 +62,26 @@ function getHeading(action: string) {
 }
 
 interface Props {
-  bulkSelections: string[];
+  allTags: string[];
+  citiesMap: CitiesMapType;
   onDismiss: () => void;
+  onShowModal: (action: 'create-person') => void;
+  people: Person[];
+  placesMap: PlaceType[];
+  selectedIds: string[];
+  selectedPhotos: Photo[];
 }
 
-export default function BulkActionsModal({ bulkSelections, onDismiss }: Props) {
+export default function BulkActionsModal({
+  allTags,
+  citiesMap,
+  onDismiss,
+  onShowModal,
+  people,
+  placesMap,
+  selectedIds,
+  selectedPhotos,
+}: Props) {
   const [action, setAction] = useState('select');
 
   const headingText = getHeading(action);
@@ -81,7 +99,17 @@ export default function BulkActionsModal({ bulkSelections, onDismiss }: Props) {
           <Select onSelect={(newAction) => setAction(newAction)} />
         )}
 
-        {action === 'edit' && <Edit bulkSelections={bulkSelections} />}
+        {action === 'edit' && (
+          <Edit
+            allTags={allTags}
+            citiesMap={citiesMap}
+            onShowModal={onShowModal}
+            people={people}
+            placesMap={placesMap}
+            selectedIds={selectedIds}
+            selectedPhotos={selectedPhotos}
+          />
+        )}
 
         {action === 'export' && 'Export here'}
 

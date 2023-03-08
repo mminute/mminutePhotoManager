@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Box, Divider, Flex, TextArea, TextField } from 'gestalt';
 import DatePicker from 'gestalt-datepicker';
 import { ShowModalType } from 'renderer/types';
 import Person from 'DataManager/PeopleManager/Person';
+import UserAnnotationPlace from 'DataManager/PhotoManager/UserAnnotationPlace';
 import Photo from '../../DataManager/PhotoManager/Photo';
 import Tags from './Tags';
 import Place from './Place/Place';
@@ -9,39 +11,10 @@ import { MaybeOption, OptionSetter, StringSetter } from './types';
 import { CitiesMapType, PlaceType } from '../../DataManager/DataManager';
 import 'gestalt-datepicker/dist/gestalt-datepicker.css';
 import PeopleComboBox from './PeopleComboBox';
+import FieldErrorIndicator from './FieldErrorIndicator';
+import makeQuotedList from './makeQuotedList';
 
-export default function UserAnnotationDisplay({
-  allTags,
-  citiesMap,
-  cityName,
-  countrySearchTerm,
-  description,
-  onShowModal,
-  people,
-  photo,
-  placeName,
-  placesMap,
-  selectedCity,
-  selectedCountry,
-  selectedDate,
-  selectedPeople,
-  selectedState,
-  setCityName,
-  setCountrySearchTerm,
-  setDescription,
-  setPlaceName,
-  setSelectedCity,
-  setSelectedCountry,
-  setSelectedDate,
-  setSelectedPeople,
-  setSelectedState,
-  setStateSearchTerm,
-  setTags,
-  setTitle,
-  stateSearchTerm,
-  tags,
-  title,
-}: {
+interface Props {
   allTags: string[];
   citiesMap: CitiesMapType;
   cityName: string;
@@ -52,6 +25,12 @@ export default function UserAnnotationDisplay({
   photo: Photo;
   placeName: string;
   placesMap: PlaceType[];
+  remainingDates?: string[];
+  remainingDescriptions?: string[];
+  remainingPeople?: string[];
+  remainingPlaces?: UserAnnotationPlace[];
+  remainingTags?: string[];
+  remainingTitles?: string[];
   selectedCity: MaybeOption;
   selectedCountry: MaybeOption;
   selectedDate: Date | undefined;
@@ -72,32 +51,116 @@ export default function UserAnnotationDisplay({
   stateSearchTerm: string;
   tags: string[];
   title: string;
-}) {
+}
+
+export default function UserAnnotationDisplay({
+  allTags,
+  citiesMap,
+  cityName,
+  countrySearchTerm,
+  description,
+  onShowModal,
+  people,
+  photo,
+  placeName,
+  placesMap,
+  remainingDates,
+  remainingDescriptions,
+  remainingPeople,
+  remainingPlaces,
+  remainingTags,
+  remainingTitles,
+  selectedCity,
+  selectedCountry,
+  selectedDate,
+  selectedPeople,
+  selectedState,
+  setCityName,
+  setCountrySearchTerm,
+  setDescription,
+  setPlaceName,
+  setSelectedCity,
+  setSelectedCountry,
+  setSelectedDate,
+  setSelectedPeople,
+  setSelectedState,
+  setStateSearchTerm,
+  setTags,
+  setTitle,
+  stateSearchTerm,
+  tags,
+  title,
+}: Props) {
+  const [dateError, setDateError] = useState(remainingDates || []);
+  const [descriptionError, setDescriptionError] = useState(
+    remainingDescriptions || []
+  );
+  const [peopleError, setPeopleError] = useState(remainingPeople || []);
+  const [placeError, setPlaceError] = useState(remainingPlaces || []);
+  const [tagsError, setTagsError] = useState(remainingTags || []);
+  const [titleError, setTitleError] = useState(remainingTitles || []);
+
   const options = allTags.map((tagTerm) => ({
     label: tagTerm,
     value: tagTerm,
   }));
+
+  const titleErrorMessage = titleError.length ? (
+    <FieldErrorIndicator
+      detailText={`Titles found: ${makeQuotedList(titleError)}`}
+      errorText="Incompatible titles found"
+    />
+  ) : null;
+
+  const descriptionErrorMessage = descriptionError.length ? (
+    <FieldErrorIndicator
+      detailText={`Descriptions found: ${makeQuotedList(descriptionError)}`}
+      errorText="Incompatible descriptions found"
+    />
+  ) : null;
+
+  const dateErrorMessage = dateError.length ? (
+    <FieldErrorIndicator
+      detailText={`Dates found: ${makeQuotedList(dateError)}`}
+      errorText="Incompatible dates found"
+    />
+  ) : undefined;
 
   return (
     <Box marginBottom={12}>
       <Flex direction="column" gap={4}>
         <TextField
           id="title"
-          onChange={({ value }) => setTitle(value)}
+          onChange={({ value }) => {
+            const errors = value ? [] : remainingTitles;
+            setTitleError(errors || []);
+            setTitle(value);
+          }}
           label="Title"
           value={title}
+          errorMessage={titleErrorMessage}
         />
         <TextArea
           id="description"
-          onChange={({ value }) => setDescription(value)}
+          onChange={({ value }) => {
+            const errors = value ? [] : remainingDescriptions;
+            setDescriptionError(errors || []);
+            setDescription(value);
+          }}
           label="Description"
           value={description}
+          errorMessage={descriptionErrorMessage}
         />
         <DatePicker
           id="datepicker"
-          onChange={({ value }) => setSelectedDate(value)}
+          onChange={({ value }) => {
+            const errors = value ? [] : remainingDates || [];
+            setDateError(errors);
+            setSelectedDate(value);
+          }}
           label="Date"
           value={selectedDate}
+          errorMessage={dateErrorMessage}
         />
         <Tags
           helperText="Search and select from existing tags. Enter text and press tab to add a new tag"
@@ -107,6 +170,9 @@ export default function UserAnnotationDisplay({
           options={options}
           setTags={setTags}
           tags={tags}
+          setTagsError={setTagsError}
+          tagsError={tagsError}
+          resetTagsError={() => setTagsError(remainingTags || [])}
         />
 
         <PeopleComboBox
@@ -114,6 +180,9 @@ export default function UserAnnotationDisplay({
           people={people}
           selectedPeople={selectedPeople}
           setSelectedPeople={setSelectedPeople}
+          peopleError={peopleError}
+          setPeopleError={setPeopleError}
+          resetPeopleError={() => setPeopleError(remainingPeople || [])}
         />
       </Flex>
 
@@ -139,6 +208,7 @@ export default function UserAnnotationDisplay({
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
         citiesMap={citiesMap}
+        placeError={placeError}
       />
       {/*
         Add some empty space to the bottom so that it feels
@@ -148,3 +218,12 @@ export default function UserAnnotationDisplay({
     </Box>
   );
 }
+
+UserAnnotationDisplay.defaultProps = {
+  remainingDates: [],
+  remainingDescriptions: [],
+  remainingPeople: [],
+  remainingPlaces: [],
+  remainingTags: [],
+  remainingTitles: [],
+};

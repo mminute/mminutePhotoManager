@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ComboBox } from 'gestalt';
 
 interface Props {
@@ -15,20 +14,22 @@ interface Props {
   onSelect: (
     newSelection: { label: string; value: string } | undefined
   ) => void;
+  errorMessage?: JSX.Element | undefined;
 }
 
 export default function GenericComboBox({
   controlledSelect,
   disabled,
+  errorMessage,
   id,
   label,
   noResultText,
-  searchTerm,
-  setSearchTerm,
+  onSelect,
   options,
   placeholder,
+  searchTerm,
   selectedOption,
-  onSelect,
+  setSearchTerm,
 }: Props) {
   const suggestedOptions = searchTerm
     ? options.filter((option) =>
@@ -72,8 +73,13 @@ export default function GenericComboBox({
       options={suggestedOptions}
       placeholder={placeholder}
       selectedOption={selectedOption}
+      errorMessage={errorMessage}
     />
   );
 }
 
-GenericComboBox.defaultProps = { controlledSelect: false, disabled: false };
+GenericComboBox.defaultProps = {
+  controlledSelect: false,
+  disabled: false,
+  errorMessage: null,
+};

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import RadioButton from 'renderer/RadioButton';
 
 interface Props {
-  bulkSelections: string[];
+  selectedIds: string[];
 }
 
 export type LocationType = 'image-files-only' | 'image-files-and-database';
@@ -13,7 +13,7 @@ interface RadioButtonData {
   value: LocationType;
 }
 
-export default function Metadata({ bulkSelections }: Props) {
+export default function Metadata({ selectedIds }: Props) {
   const [locationsToScrub, setLocationsToScrub] =
     useState<LocationType>('image-files-only');
 
@@ -61,7 +61,7 @@ export default function Metadata({ bulkSelections }: Props) {
               text="Delete EXIF data"
               onClick={() =>
                 window.electron.ipcRenderer.scrubExifData(
-                  bulkSelections,
+                  selectedIds,
                   locationsToScrub
                 )
               }

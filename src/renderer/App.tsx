@@ -279,6 +279,11 @@ export default class App extends React.Component<Props, State> {
           </PageWrapper>
         </Router>
 
+        {/*
+          TODO: Since you can have the create-person modal
+          over the bulk-actions modal
+          'currentModal' should be replaced with a stack of some sort
+        */}
         {currentModal && (
           <Layer
             zIndex={
@@ -302,8 +307,16 @@ export default class App extends React.Component<Props, State> {
 
             {currentModal === 'bulk-actions' && (
               <BulkActionsModal
-                bulkSelections={bulkSelections}
+                allTags={tags}
+                citiesMap={citiesMap}
                 onDismiss={() => this.setState({ currentModal: null })}
+                onShowModal={(name) => this.setState({ currentModal: name })}
+                people={people}
+                placesMap={placesMap}
+                selectedIds={bulkSelections}
+                selectedPhotos={photos.filter((p) =>
+                  bulkSelections.includes(p.filePath)
+                )}
               />
             )}
           </Layer>
