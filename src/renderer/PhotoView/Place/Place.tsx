@@ -122,6 +122,12 @@ export default function Place({
       setStateSearchTerm('');
       setSelectedCity(undefined);
       setCityName('');
+
+      if (!placeName) {
+        resetPlaceError();
+      }
+    } else {
+      clearPlaceError();
     }
 
     if (
@@ -267,8 +273,6 @@ export default function Place({
       errorText="Incompatible places found"
     />
   ) : undefined;
-
-  console.log('Place', { placeError });
 
   return (
     <>
