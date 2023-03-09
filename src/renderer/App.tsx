@@ -18,7 +18,7 @@ import PersonModal from './PersonModal';
 import PeopleView from './PeopleView';
 import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
 import buildFileTree, { DirectoryData } from './utils/buildFileTree';
-import BulkActionsModal from './BulkActions/BulkActionsModal';
+import BulkActions from './BulkActions/BulkActions';
 
 interface Props {}
 interface State {
@@ -306,7 +306,7 @@ export default class App extends React.Component<Props, State> {
             )}
 
             {currentModal === 'bulk-actions' && (
-              <BulkActionsModal
+              <BulkActions
                 allTags={tags}
                 citiesMap={citiesMap}
                 onDismiss={() => this.setState({ currentModal: null })}
