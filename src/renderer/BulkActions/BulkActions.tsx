@@ -30,6 +30,7 @@ export default function BulkActions({
   selectedPhotos,
 }: Props) {
   const [action, setAction] = useState('select');
+  const backToSelect = () => setAction('select');
 
   switch (action) {
     case 'select':
@@ -42,6 +43,7 @@ export default function BulkActions({
     case 'edit':
       return (
         <Edit
+          backToSelect={backToSelect}
           onDismiss={onDismiss}
           allTags={allTags}
           citiesMap={citiesMap}
@@ -53,11 +55,11 @@ export default function BulkActions({
         />
       );
     case 'export':
-      return <Export onDismiss={onDismiss} />;
+      return <Export backToSelect={backToSelect} onDismiss={onDismiss} />;
     case 'move':
-      return <Move onDismiss={onDismiss} />;
+      return <Move backToSelect={backToSelect} onDismiss={onDismiss} />;
     case 'delete':
-      return <Delete onDismiss={onDismiss} />;
+      return <Delete backToSelect={backToSelect} onDismiss={onDismiss} />;
     default:
       return null;
   }

@@ -12,6 +12,7 @@ export default function Select({
 
   return (
     <Modal
+      accessibilityModalLabel="Select an action"
       heading="Select an action"
       onDismiss={onDismiss}
       footer={

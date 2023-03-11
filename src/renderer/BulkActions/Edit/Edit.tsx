@@ -1,7 +1,14 @@
 import { CitiesMapType, PlaceType } from 'DataManager/DataManager';
 import Person from 'DataManager/PeopleManager/Person';
 import Photo from 'DataManager/PhotoManager/Photo';
-import { Box, Button, Flex, SegmentedControl } from 'gestalt';
+import {
+  Box,
+  Button,
+  IconButton,
+  Flex,
+  Heading,
+  SegmentedControl,
+} from 'gestalt';
 import { useState } from 'react';
 import UserAnnotationPlace from 'DataManager/PhotoManager/UserAnnotationPlace';
 import UserAnnotationData from 'DataManager/PhotoManager/UserAnnotationData';
@@ -10,9 +17,11 @@ import AnnotationsAggregator from './AnnotationsAggregator';
 import Metadata from './Metadata';
 import { defaultMetadata } from '../../../DataManager/PhotoManager/parseExif';
 import Modal from '../Modal';
+import ModalHeading from '../ModalHeading';
 
 interface Props {
   allTags: string[];
+  backToSelect: () => void;
   citiesMap: CitiesMapType;
   onDismiss: () => void;
   onShowModal: (action: 'create-person') => void;
@@ -26,6 +35,7 @@ const sections = ['Annotations', 'Metadata'];
 
 export default function Edit({
   allTags,
+  backToSelect,
   citiesMap,
   onDismiss,
   onShowModal,
@@ -96,7 +106,10 @@ export default function Edit({
 
         return (
           <Modal
-            heading="Edit photos"
+            accessibilityModalLabel="Edit photos"
+            heading={
+              <ModalHeading txt="Edit photos" backToSelect={backToSelect} />
+            }
             onDismiss={onDismiss}
             footer={
               <Flex direction="row" justifyContent="between">

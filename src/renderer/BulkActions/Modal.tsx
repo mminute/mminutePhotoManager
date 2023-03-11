@@ -1,16 +1,23 @@
 import { Box, Modal as GestaltModal } from 'gestalt';
 
 interface Props {
-  heading: string;
+  accessibilityModalLabel: string;
+  heading: React.ReactNode;
   onDismiss: () => void;
   footer: React.ReactNode;
   children: React.ReactNode;
 }
 
-export default function Modal({ heading, onDismiss, footer, children }: Props) {
+export default function Modal({
+  accessibilityModalLabel,
+  heading,
+  onDismiss,
+  footer,
+  children,
+}: Props) {
   return (
     <GestaltModal
-      accessibilityModalLabel={heading}
+      accessibilityModalLabel={accessibilityModalLabel}
       onDismiss={onDismiss}
       heading={heading}
       footer={footer}

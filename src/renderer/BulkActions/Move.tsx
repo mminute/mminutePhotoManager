@@ -1,10 +1,18 @@
 import { Button, Flex } from 'gestalt';
 import Modal from './Modal';
+import ModalHeading from './ModalHeading';
 
-export default function Move({ onDismiss }: { onDismiss: () => void }) {
+export default function Move({
+  backToSelect,
+  onDismiss,
+}: {
+  backToSelect: () => void;
+  onDismiss: () => void;
+}) {
   return (
     <Modal
-      heading="Move"
+      accessibilityModalLabel="Move"
+      heading={<ModalHeading txt="Move" backToSelect={backToSelect} />}
       onDismiss={onDismiss}
       footer={
         <Flex direction="row" justifyContent="between">
