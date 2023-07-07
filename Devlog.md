@@ -4,6 +4,8 @@
 - Build base64 string each time since someone may have replaced the photo
 - Remove the app level save button and update directly from photos/people etc
 - Photo filtering - What to do if there is a place name that appears multiple times for different country/state/cities?
+- Date picker in bulk actions - Edit menu gets cut off
+- Errror popovers in bulk actions - edits are buggy
 
 ### 2023-01-08
 - Added multi select logic
