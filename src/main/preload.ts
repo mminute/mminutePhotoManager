@@ -1,9 +1,13 @@
 import { NewPersonData } from 'DataManager/PeopleManager/PeopleManager';
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { OnUpdateArgs } from 'renderer/BulkActions/Edit/Annotations';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
+    bulkEditPhotos(photoIds: string[], updateData: OnUpdateArgs) {
+      ipcRenderer.send('bulk-edit-photos', photoIds, updateData);
+    },
     createPerson(personData: NewPersonData) {
       ipcRenderer.send('create-person', personData);
     },

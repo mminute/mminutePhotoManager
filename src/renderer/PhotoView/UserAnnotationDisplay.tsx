@@ -14,6 +14,15 @@ import PeopleComboBox from './PeopleComboBox';
 import FieldErrorIndicator from './FieldErrorIndicator';
 import makeQuotedList from './makeQuotedList';
 
+export interface OnUpdateArgs {
+  hasDateError: boolean;
+  hasDescriptionError: boolean;
+  hasPeopleError: boolean;
+  hasPlaceError: boolean;
+  hasTagsError: boolean;
+  hasTitleError: boolean;
+}
+
 interface Props {
   allTags: string[];
   citiesMap: CitiesMapType;
@@ -51,6 +60,7 @@ interface Props {
   stateSearchTerm: string;
   tags: string[];
   title: string;
+  onUpdate: (hasErrors: OnUpdateArgs) => void;
 }
 
 export default function UserAnnotationDisplay({
@@ -90,6 +100,7 @@ export default function UserAnnotationDisplay({
   stateSearchTerm,
   tags,
   title,
+  onUpdate,
 }: Props) {
   const [dateError, setDateError] = useState(remainingDates || []);
   const [descriptionError, setDescriptionError] = useState(
@@ -99,6 +110,16 @@ export default function UserAnnotationDisplay({
   const [placeError, setPlaceError] = useState(remainingPlaces || []);
   const [tagsError, setTagsError] = useState(remainingTags || []);
   const [titleError, setTitleError] = useState(remainingTitles || []);
+
+  // For live error checking when inputting bulk actions data
+  onUpdate({
+    hasDateError: !!dateError.length,
+    hasDescriptionError: !!descriptionError.length,
+    hasPeopleError: !!peopleError.length,
+    hasPlaceError: !!placeError.length,
+    hasTagsError: !!tagsError.length,
+    hasTitleError: !!titleError.length,
+  });
 
   const options = allTags.map((tagTerm) => ({
     label: tagTerm,

@@ -1,18 +1,11 @@
 import { CitiesMapType, PlaceType } from 'DataManager/DataManager';
 import Person from 'DataManager/PeopleManager/Person';
 import Photo from 'DataManager/PhotoManager/Photo';
-import {
-  Box,
-  Button,
-  IconButton,
-  Flex,
-  Heading,
-  SegmentedControl,
-} from 'gestalt';
-import { useState } from 'react';
+import { Box, Button, Flex, SegmentedControl } from 'gestalt';
+import { useRef, useState } from 'react';
 import UserAnnotationPlace from 'DataManager/PhotoManager/UserAnnotationPlace';
 import UserAnnotationData from 'DataManager/PhotoManager/UserAnnotationData';
-import Annotations from './Annotations';
+import Annotations, { OnUpdateArgs } from './Annotations';
 import AnnotationsAggregator from './AnnotationsAggregator';
 import Metadata from './Metadata';
 import { defaultMetadata } from '../../../DataManager/PhotoManager/parseExif';
@@ -23,6 +16,7 @@ interface Props {
   allTags: string[];
   backToSelect: () => void;
   citiesMap: CitiesMapType;
+  onClearBulkSelection: () => void;
   onDismiss: () => void;
   onShowModal: (action: 'create-person') => void;
   people: Person[];
@@ -37,6 +31,7 @@ export default function Edit({
   allTags,
   backToSelect,
   citiesMap,
+  onClearBulkSelection,
   onDismiss,
   onShowModal,
   people,
@@ -44,6 +39,7 @@ export default function Edit({
   selectedIds,
   selectedPhotos,
 }: Props) {
+  const submissionData = useRef<OnUpdateArgs | undefined>();
   const [activeSegmentIndex, setActiveSegmentIndex] = useState(0);
   return (
     <AnnotationsAggregator selectedPhotos={selectedPhotos}>
@@ -104,6 +100,22 @@ export default function Edit({
           filename: '',
         });
 
+        const handleUpdate = (rawSubmissiondata: OnUpdateArgs) => {
+          submissionData.current = rawSubmissiondata;
+        };
+
+        const handleSubmit = () => {
+          if (submissionData.current) {
+            window.electron.ipcRenderer.bulkEditPhotos(
+              selectedIds,
+              submissionData.current
+            );
+          }
+
+          onClearBulkSelection();
+          onDismiss();
+        };
+
         return (
           <Modal
             accessibilityModalLabel="Edit photos"
@@ -114,15 +126,9 @@ export default function Edit({
             footer={
               <Flex direction="row" justifyContent="between">
                 <Button text="Cancel" onClick={onDismiss} />
-                <Button
-                  color="red"
-                  text="Appy"
-                  onClick={() => {
-                    console.log('Apply photo updates here');
-                    // TODO: clear the selected photos
-                    onDismiss();
-                  }}
-                />
+                {sections[activeSegmentIndex] === 'Annotations' && (
+                  <Button color="red" text="Appy" onClick={handleSubmit} />
+                )}
               </Flex>
             }
           >
@@ -137,6 +143,7 @@ export default function Edit({
 
               {sections[activeSegmentIndex] === 'Annotations' && (
                 <Annotations
+                  onUpdate={handleUpdate}
                   allTags={allTags}
                   citiesMap={citiesMap}
                   onShowModal={onShowModal}

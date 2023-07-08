@@ -143,12 +143,12 @@ export default function PeopleComboBox({
 
   const errorMessage = peopleError.length ? (
     <FieldErrorIndicator
-      detailText={`Tags found: ${peopleError
+      detailText={`People found: ${peopleError
         .map(
           (personId) => peopleOptions.find((p) => p.value === personId)?.label
         )
         .join(', ')}`}
-      errorText="Incompatible tag lists found"
+      errorText="Incompatible people lists found"
     />
   ) : undefined;
 
@@ -168,6 +168,8 @@ export default function PeopleComboBox({
           onSelect={handleOnSelect}
           options={suggestedOptions}
           tags={renderedTags}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - ComboBox expects a string rather than a JSX element
           errorMessage={errorMessage}
         />
       </Box>

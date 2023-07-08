@@ -184,6 +184,7 @@ export default function PhotoView({
                   countrySearchTerm={countrySearchTerm}
                   description={description}
                   onShowModal={onShowModal}
+                  onUpdate={() => {}}
                   people={people}
                   photo={photo}
                   placeName={placeName}

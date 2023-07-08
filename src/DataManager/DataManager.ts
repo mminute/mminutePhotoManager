@@ -5,6 +5,7 @@ import UserAnnotationPlace from './PhotoManager/UserAnnotationPlace';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
 import PeopleManager, { NewPersonData } from './PeopleManager/PeopleManager';
 import Person from './PeopleManager/Person';
+import { OnUpdateArgs } from 'renderer/BulkActions/Edit/Annotations';
 
 export type MaybeString = string | null;
 
@@ -173,5 +174,19 @@ export default class DataManager {
 
   scrubExifData(photoIds: string[], locationsToScrub: LocationType) {
     this.#photoManager.scrubExifData(photoIds, locationsToScrub);
+  }
+
+  bulkUpdatePhotos(photoIds: string[], updateData: OnUpdateArgs) {
+    photoIds.forEach((photoId) => {
+      this.#photoManager.updatePhoto({
+        filepath: photoId,
+        userAnnotations: {
+          ...updateData,
+          countrySearchTerm: '',
+          stateSearchTerm: '',
+          selectedCity: undefined,
+        },
+      });
+    });
   }
 }

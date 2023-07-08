@@ -86,6 +86,11 @@ export default class App extends React.Component<Props, State> {
       actions.SCRUB_EXIF_DATA_SUCCES,
       this.handleExifDataScrubbed
     );
+
+    window.electron.ipcRenderer.on(
+      actions.BULK_EDIT_PHOTOS_SUCCESS,
+      this.handlePhotosObtained
+    );
   }
 
   componentWillUnmount() {
@@ -110,11 +115,6 @@ export default class App extends React.Component<Props, State> {
     );
 
     window.electron.ipcRenderer.removeListener(
-      actions.UPDATE_PERSON_SUCCESS,
-      this.handlePeopleUpdated
-    );
-
-    window.electron.ipcRenderer.removeListener(
       actions.DELETE_PERSON_SUCCESS,
       this.handlePersonDeleted
     );
@@ -122,6 +122,11 @@ export default class App extends React.Component<Props, State> {
     window.electron.ipcRenderer.removeListener(
       actions.SCRUB_EXIF_DATA_SUCCES,
       this.handleExifDataScrubbed
+    );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.BULK_EDIT_PHOTOS_SUCCESS,
+      this.handlePhotosObtained
     );
   }
 
@@ -309,6 +314,9 @@ export default class App extends React.Component<Props, State> {
               <BulkActions
                 allTags={tags}
                 citiesMap={citiesMap}
+                onClearBulkSelection={() =>
+                  this.handleUpdateBulkSelection({ action: 'clear' })
+                }
                 onDismiss={() => this.setState({ currentModal: null })}
                 onShowModal={(name) => this.setState({ currentModal: name })}
                 people={people}

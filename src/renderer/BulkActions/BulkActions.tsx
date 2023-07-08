@@ -11,6 +11,7 @@ import Export from './Export';
 interface Props {
   allTags: string[];
   citiesMap: CitiesMapType;
+  onClearBulkSelection: () => void;
   onDismiss: () => void;
   onShowModal: (action: 'create-person') => void;
   people: Person[];
@@ -22,6 +23,7 @@ interface Props {
 export default function BulkActions({
   allTags,
   citiesMap,
+  onClearBulkSelection,
   onDismiss,
   onShowModal,
   people,
@@ -43,10 +45,11 @@ export default function BulkActions({
     case 'edit':
       return (
         <Edit
-          backToSelect={backToSelect}
-          onDismiss={onDismiss}
           allTags={allTags}
+          backToSelect={backToSelect}
           citiesMap={citiesMap}
+          onClearBulkSelection={onClearBulkSelection}
+          onDismiss={onDismiss}
           onShowModal={onShowModal}
           people={people}
           placesMap={placesMap}
