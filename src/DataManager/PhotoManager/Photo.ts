@@ -1,11 +1,9 @@
-import * as path from 'path';
-import fs from 'fs';
-import getImageSize from 'image-size';
 import piexif from 'piexifjs';
+import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
+import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 import parseExif, { defaultMetadata, Metadata } from './parseExif';
 import { UserAnnotationUpdates } from '../../renderer/PhotoView/types';
 import UserAnnotationData from './UserAnnotationData';
-import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 
 interface PhotoData {
   base64: string;
@@ -15,10 +13,17 @@ interface PhotoData {
   userAnnotations: UserAnnotationData;
 }
 
+interface FileHandlers {
+  readFileSync: (filepath: string) => Buffer;
+  writeFileSync: (filepath: string, fileContents: Buffer) => void;
+}
+
 export default class Photo {
   base64: string;
 
   #binary: string;
+
+  #fileHandlers: FileHandlers;
 
   filePath: string;
 
@@ -32,7 +37,21 @@ export default class Photo {
 
   userAnnotations: UserAnnotationData;
 
-  constructor({ data, filePath }: { data?: PhotoData; filePath?: string }) {
+  constructor({
+    data,
+    filename,
+    filePath,
+    fileHandlers,
+    getImageSize,
+  }: {
+    data?: PhotoData;
+    filename: string;
+    filePath?: string;
+    fileHandlers: FileHandlers;
+    getImageSize: (filepath: string) => ISizeCalculationResult;
+  }) {
+    this.#fileHandlers = fileHandlers;
+
     if (data) {
       this.base64 = data.base64;
       this.filePath = data.filePath;
@@ -41,9 +60,9 @@ export default class Photo {
       this.userAnnotations = new UserAnnotationData(data.userAnnotations);
     } else if (filePath) {
       this.filePath = filePath;
-      this.filename = path.basename(filePath);
+      this.filename = filename;
 
-      const fileContents = fs.readFileSync(filePath);
+      const fileContents = this.#fileHandlers.readFileSync(filePath);
 
       this.base64 = fileContents.toString('base64');
       this.#binary = fileContents.toString('binary');
@@ -147,6 +166,6 @@ export default class Photo {
     // https://auth0.com/blog/read-edit-exif-metadata-in-photos-with-javascript/#The--Piexifjs--Library
     const scrubbedData = piexif.remove(this.#binary);
     const fileBuffer = Buffer.from(scrubbedData, 'binary');
-    fs.writeFileSync(this.filePath, fileBuffer);
+    this.#fileHandlers.writeFileSync(this.filePath, fileBuffer);
   }
 }

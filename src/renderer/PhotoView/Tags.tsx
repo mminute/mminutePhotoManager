@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 import { ComboBox, Tag } from 'gestalt';
+import FieldErrorIndicator from './FieldErrorIndicator';
 
 interface Props {
   helperText: string;
@@ -7,8 +8,11 @@ interface Props {
   inputLabel: string;
   noResultText: string;
   options: { label: string; value: string }[];
+  setTagsError: (newTagError: string[]) => void;
   setTags: (newTags: string[]) => void;
+  tagsError: string[];
   tags: string[];
+  resetTagsError: () => void;
 }
 
 export default function Tags({
@@ -17,8 +21,11 @@ export default function Tags({
   inputLabel,
   noResultText,
   options,
+  setTagsError,
   setTags,
+  tagsError,
   tags,
+  resetTagsError,
 }: Props) {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -37,6 +44,7 @@ export default function Tags({
   const handleClear = () => {
     setTags([]);
     setSuggestedOptions(options);
+    resetTagsError();
   };
 
   const handleOnChange = ({ value }: { value: string }) => {
@@ -61,6 +69,7 @@ export default function Tags({
       setTags(newTags);
       filterSuggested(newTags);
       setSearchTerm('');
+      setTagsError([]);
     }
   };
 
@@ -77,12 +86,17 @@ export default function Tags({
       const newTags = [...tags.slice(0, -1)];
       setTags(newTags);
       filterSuggested(newTags);
+
+      if (!newTags.length) {
+        resetTagsError();
+      }
     } else if (keyCode === 9) {
       // Tab
       if (searchTerm && !tags.includes(searchTerm)) {
         const newTags = [...tags, searchTerm];
         setTags(newTags);
         filterSuggested(newTags);
+        setTagsError([]);
       }
     }
   };
@@ -91,6 +105,10 @@ export default function Tags({
     const newTags = tags.filter((tagValue) => tagValue !== removedValue);
     setTags(newTags);
     filterSuggested(newTags);
+
+    if (!newTags.length) {
+      resetTagsError();
+    }
   };
 
   const renderedTags = tags.map((tagTerm) => (
@@ -101,6 +119,13 @@ export default function Tags({
       text={tagTerm}
     />
   ));
+
+  const errorMessage = tagsError.length ? (
+    <FieldErrorIndicator
+      detailText={`Tags found: ${tagsError.join(', ')}`}
+      errorText="Incompatible tag lists found"
+    />
+  ) : undefined;
 
   return (
     <ComboBox
@@ -117,6 +142,7 @@ export default function Tags({
       onSelect={handleOnSelect}
       options={suggestedOptions}
       tags={renderedTags}
+      errorMessage={errorMessage}
     />
   );
 }

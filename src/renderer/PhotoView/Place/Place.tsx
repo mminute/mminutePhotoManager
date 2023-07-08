@@ -4,6 +4,15 @@ import countries from 'iso3166-2-db/i18n/dispute/UN/en';
 import GenericComboBox from './GenericComboBox';
 import { CitiesMapType, PlaceType } from '../../../DataManager/DataManager';
 import '../../Toast.css';
+import UserAnnotationPlace from '../../../DataManager/PhotoManager/UserAnnotationPlace';
+import FieldErrorIndicator from '../FieldErrorIndicator';
+import makeQuotedList from '../makeQuotedList';
+
+function makePlaceLabel(p: UserAnnotationPlace) {
+  return [p.name, p.country.label, p.stateProvince.value, p.city]
+    .filter(Boolean)
+    .join(' - ');
+}
 
 type Option = { label: string; value: string };
 type MaybeOption = Option | undefined;
@@ -26,6 +35,9 @@ interface Props {
   selectedCity: MaybeOption;
   setSelectedCity: (newCity: MaybeOption) => void;
   citiesMap: CitiesMapType;
+  placeError: UserAnnotationPlace[];
+  clearPlaceError: () => void;
+  resetPlaceError: () => void;
 }
 
 const countryOptions = Object.keys(countries).map((countryCode) => ({
@@ -70,6 +82,9 @@ export default function Place({
   selectedCity,
   setSelectedCity,
   citiesMap,
+  placeError,
+  clearPlaceError,
+  resetPlaceError,
 }: Props) {
   const [waiting, setWaiting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +122,12 @@ export default function Place({
       setStateSearchTerm('');
       setSelectedCity(undefined);
       setCityName('');
+
+      if (!placeName) {
+        resetPlaceError();
+      }
+    } else {
+      clearPlaceError();
     }
 
     if (
@@ -229,8 +250,29 @@ export default function Place({
         countryCode: foundPlace.countryCode || '',
         stateProvince: foundPlace.stateProvince || '',
       });
+
+      clearPlaceError();
     }
   };
+
+  const handleSetSearchTerm = (newVal: string) => {
+    setPlaceName(newVal);
+
+    if (newVal) {
+      clearPlaceError();
+    } else {
+      resetPlaceError();
+    }
+  };
+
+  const errorMessage = placeError.length ? (
+    <FieldErrorIndicator
+      detailText={`Places found: ${makeQuotedList(
+        placeError.map(makePlaceLabel)
+      )}`}
+      errorText="Incompatible places found"
+    />
+  ) : undefined;
 
   return (
     <>
@@ -264,10 +306,11 @@ export default function Place({
           noResultText="No location found"
           placeholder="Enter a location"
           searchTerm={placeName}
-          setSearchTerm={setPlaceName}
+          setSearchTerm={handleSetSearchTerm}
           selectedOption={undefined}
           onSelect={handleSelectPlace}
           options={placesWithLabel}
+          errorMessage={errorMessage}
         />
 
         <Flex direction="row" gap={4} justifyContent="between" alignItems="end">
@@ -316,9 +359,9 @@ export default function Place({
           noResultText="No city found"
           placeholder="Select a city"
           searchTerm={cityName}
-          setSearchTerm={setCityName}
+          setSearchTerm={(newVal) => setCityName(newVal)}
           selectedOption={selectedCity}
-          onSelect={setSelectedCity}
+          onSelect={(newVal) => setSelectedCity(newVal)}
           options={cityOptions}
         />
       </Flex>

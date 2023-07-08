@@ -167,6 +167,19 @@ ipcMain.on(actions.SCRUB_EXIF_DATA, (event, photoIds, locationsToScrub) => {
   event.reply(actions.SCRUB_EXIF_DATA_SUCCES, dataManager.photos);
 });
 
+ipcMain.on(actions.BULK_EDIT_PHOTOS, (event, photoIds, updateData) => {
+  dataManager.bulkUpdatePhotos(photoIds, updateData);
+
+  event.reply(
+    actions.BULK_EDIT_PHOTOS_SUCCESS,
+    dataManager.photos,
+    dataManager.tags,
+    dataManager.placesMap,
+    dataManager.citiesMap,
+    dataManager.people
+  );
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

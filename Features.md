@@ -21,7 +21,6 @@
   - [ ] Sort table view
   - [x] Edit people
   - [x] Delete people
-- [ ] Edit EXIF data
 - [x] Filter and search photos
   - [x] Location
   - [x] Tags
@@ -35,6 +34,8 @@
   - [x] Select/Unselect
   - [ ] Export
   - [ ] Edit
+    - [ ] Annotations
+    - [x] EXIF metadata
   - [ ] Move
   - [ ] Delete
 - [ ] Update save to happen on photo/person etc level and remove the app level button

@@ -1,10 +1,12 @@
 import { NewPersonData } from 'DataManager/PeopleManager/PeopleManager';
 import { PhotoUpdateData } from './PhotoView/types';
+import { OnUpdateArgs as BulkPhotoUpdateData } from './BulkActions/Edit/Annotations';
 
 declare global {
   interface Window {
     electron: {
       ipcRenderer: {
+        bulkEditPhotos(photoIds: string[], bulkUpdates: BulkPhotoUpdateData): void;
         createPerson(newPerson: NewPersonData): void;
         deletePerson(targetId: string): void;
         updatePerson(personUpdates: NewPersonData): void;

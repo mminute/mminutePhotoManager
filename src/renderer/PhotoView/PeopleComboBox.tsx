@@ -3,12 +3,16 @@ import { Box, ComboBox, IconButton, Tag } from 'gestalt';
 import { ShowModalType } from 'renderer/types';
 import Person from 'DataManager/PeopleManager/Person';
 import makePersonName from 'renderer/utils/makePersonName';
+import FieldErrorIndicator from './FieldErrorIndicator';
 
 interface Props {
   onShowModal: ShowModalType;
   people: Person[];
   selectedPeople: string[];
   setSelectedPeople: (newPeople: string[]) => void;
+  peopleError: string[];
+  setPeopleError: (newPeopleError: string[]) => void;
+  resetPeopleError: () => void;
 }
 
 export default function PeopleComboBox({
@@ -16,6 +20,9 @@ export default function PeopleComboBox({
   people,
   setSelectedPeople,
   selectedPeople,
+  peopleError,
+  setPeopleError,
+  resetPeopleError,
 }: Props) {
   const peopleOptions = people.map((person) => ({
     label: makePersonName(person),
@@ -47,6 +54,7 @@ export default function PeopleComboBox({
   const handleClear = () => {
     setSelectedPeople([]);
     setSuggestedOptions(peopleOptions);
+    resetPeopleError();
   };
 
   const handleOnChange = ({ value }: { value: string }) => {
@@ -74,6 +82,8 @@ export default function PeopleComboBox({
       filterSuggested(newPeople);
       setSearchTerm('');
     }
+
+    setPeopleError([]);
   };
 
   const handleOnKeyDown = ({
@@ -89,6 +99,10 @@ export default function PeopleComboBox({
       const newPeople = [...selectedPeople.slice(0, -1)];
       setSelectedPeople(newPeople);
       filterSuggested(newPeople);
+
+      if (!newPeople.length) {
+        resetPeopleError();
+      }
     }
   };
 
@@ -98,6 +112,10 @@ export default function PeopleComboBox({
     );
     setSelectedPeople(newPeople);
     filterSuggested(newPeople);
+
+    if (!newPeople.length) {
+      resetPeopleError();
+    }
   };
 
   const selectedPeopleObjects: Person[] = [];
@@ -123,6 +141,17 @@ export default function PeopleComboBox({
     );
   });
 
+  const errorMessage = peopleError.length ? (
+    <FieldErrorIndicator
+      detailText={`People found: ${peopleError
+        .map(
+          (personId) => peopleOptions.find((p) => p.value === personId)?.label
+        )
+        .join(', ')}`}
+      errorText="Incompatible people lists found"
+    />
+  ) : undefined;
+
   return (
     <Box display="flex" direction="row" alignItems="end">
       <Box width="100%" marginEnd={4}>
@@ -139,6 +168,9 @@ export default function PeopleComboBox({
           onSelect={handleOnSelect}
           options={suggestedOptions}
           tags={renderedTags}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - ComboBox expects a string rather than a JSX element
+          errorMessage={errorMessage}
         />
       </Box>
 
