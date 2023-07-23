@@ -1,14 +1,24 @@
-import { Button, Flex } from 'gestalt';
+import { Box, Button, Flex, Heading, Text } from 'gestalt';
 import Modal from './Modal';
 import ModalHeading from './ModalHeading';
 
 export default function Delete({
   backToSelect,
   onDismiss,
+  selectedIds,
+  onClearBulkSelection,
 }: {
   backToSelect: () => void;
   onDismiss: () => void;
+  selectedIds: string[];
+  onClearBulkSelection: () => void;
 }) {
+  const handleDelete = () => {
+    window.electron.ipcRenderer.deletePhotos(selectedIds);
+    onClearBulkSelection();
+    onDismiss();
+  };
+
   return (
     <Modal
       accessibilityModalLabel="Delete"
@@ -17,10 +27,18 @@ export default function Delete({
       footer={
         <Flex direction="row" justifyContent="between">
           <Button text="Cancel" onClick={onDismiss} />
+          <Button color="red" text="Delete" onClick={handleDelete} />
         </Flex>
       }
     >
-      <h1>Delete</h1>
+      <Box padding={8}>
+        <Flex direction="column" gap={2} alignItems="center">
+          <Heading color="error">Warning</Heading>
+          <Text weight="bold" italic>
+            This action cannot be undone
+          </Text>
+        </Flex>
+      </Box>
     </Modal>
   );
 }

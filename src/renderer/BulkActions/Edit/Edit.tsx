@@ -127,7 +127,7 @@ export default function Edit({
               <Flex direction="row" justifyContent="between">
                 <Button text="Cancel" onClick={onDismiss} />
                 {sections[activeSegmentIndex] === 'Annotations' && (
-                  <Button color="red" text="Appy" onClick={handleSubmit} />
+                  <Button color="red" text="Apply" onClick={handleSubmit} />
                 )}
               </Flex>
             }

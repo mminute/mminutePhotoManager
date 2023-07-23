@@ -91,6 +91,11 @@ export default class App extends React.Component<Props, State> {
       actions.BULK_EDIT_PHOTOS_SUCCESS,
       this.handlePhotosObtained
     );
+
+    window.electron.ipcRenderer.on(
+      actions.BULK_DELETE_PHOTOS_SUCCESS,
+      this.handlePhotosObtained
+    );
   }
 
   componentWillUnmount() {

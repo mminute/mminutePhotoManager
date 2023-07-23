@@ -13,6 +13,8 @@ export const actions = {
   UPDATE_PERSON_SUCCESS: 'update-person-success',
   DELETE_PERSON: 'delete-person',
   DELETE_PERSON_SUCCESS: 'delete-person-success',
+  BULK_DELETE_PHOTOS: 'delete-photos',
+  BULK_DELETE_PHOTOS_SUCCESS: 'delete-photos-success',
   SCRUB_EXIF_DATA: 'scrub-exif-data',
   SCRUB_EXIF_DATA_SUCCES: 'scrub-exif-data-success',
 };

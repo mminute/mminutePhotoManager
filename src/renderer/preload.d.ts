@@ -6,17 +6,21 @@ declare global {
   interface Window {
     electron: {
       ipcRenderer: {
-        bulkEditPhotos(photoIds: string[], bulkUpdates: BulkPhotoUpdateData): void;
+        bulkEditPhotos(
+          photoIds: string[],
+          bulkUpdates: BulkPhotoUpdateData
+        ): void;
         createPerson(newPerson: NewPersonData): void;
         deletePerson(targetId: string): void;
-        updatePerson(personUpdates: NewPersonData): void;
-        selectDirectory(): void;
+        deletePhotos(photoIds: string[]): void;
         savePhotoManager(): void;
-        updatePhotoData(updatedData: PhotoUpdateData): void;
         scrubExifData(
           photoIds: string[],
           locationsToScrub: 'image-files-only' | 'image-files-and-database'
         ): void;
+        selectDirectory(): void;
+        updatePerson(personUpdates: NewPersonData): void;
+        updatePhotoData(updatedData: PhotoUpdateData): void;
         on(
           channel: string,
           func: (...args: unknown[]) => void
