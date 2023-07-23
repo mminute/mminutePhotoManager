@@ -33,9 +33,9 @@
 - [ ] Bulk actions
   - [x] Select/Unselect
   - [ ] Export
-  - [ ] Edit
-    - [ ] Annotations
+  - [x] Edit
+    - [x] Annotations
     - [x] EXIF metadata
   - [ ] Move
-  - [ ] Delete
+  - [x] Delete
 - [ ] Update save to happen on photo/person etc level and remove the app level button

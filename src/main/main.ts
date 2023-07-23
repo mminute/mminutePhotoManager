@@ -180,6 +180,19 @@ ipcMain.on(actions.BULK_EDIT_PHOTOS, (event, photoIds, updateData) => {
   );
 });
 
+ipcMain.on(actions.BULK_DELETE_PHOTOS, (event, photoIds) => {
+  dataManager.bulkDeletePhotos(photoIds);
+
+  event.reply(
+    actions.BULK_DELETE_PHOTOS_SUCCESS,
+    dataManager.photos,
+    dataManager.tags,
+    dataManager.placesMap,
+    dataManager.citiesMap,
+    dataManager.people
+  );
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

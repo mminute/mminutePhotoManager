@@ -69,4 +69,15 @@ export default class PhotoManager {
       .filter((p) => photoIds.includes(p.filePath))
       .forEach((p) => p.scrubExifData(locationsToScrub));
   }
+
+  deletePhoto(photoId: string) {
+    const targetIndex = this.photos.findIndex((p) => p.filePath === photoId);
+    // Delete the photo data
+    this.photos.splice(targetIndex, 1);
+    // Delete the photo file
+    fs.unlink(photoId, (err) => {
+      if (err) throw err;
+      console.log(`${photoId} was deleted`);
+    });
+  }
 }

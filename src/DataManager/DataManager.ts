@@ -189,4 +189,10 @@ export default class DataManager {
       });
     });
   }
+
+  bulkDeletePhotos(photoIds: string[]) {
+    photoIds.forEach((photoId) => {
+      this.#photoManager.deletePhoto(photoId);
+    });
+  }
 }

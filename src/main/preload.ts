@@ -14,8 +14,17 @@ contextBridge.exposeInMainWorld('electron', {
     deletePerson(targetId: string) {
       ipcRenderer.send('delete-person', targetId);
     },
-    updatePerson(personUpdates: NewPersonData) {
-      ipcRenderer.send('update-person', personUpdates);
+    deletePhotos(photoIds: string[]) {
+      ipcRenderer.send('delete-photos', photoIds);
+    },
+    savePhotoManager() {
+      ipcRenderer.send('save-photo-manager');
+    },
+    scrubExifData(
+      photoIds: string[],
+      locationsToScrub: 'image-files-only' | 'image-files-and-database'
+    ) {
+      ipcRenderer.send('scrub-exif-data', photoIds, locationsToScrub);
     },
     selectDirectory() {
       ipcRenderer.send('select-directory');
@@ -27,17 +36,11 @@ contextBridge.exposeInMainWorld('electron', {
       //   event.reply('ipc-example', msgTemplate('pong'));
       // });
     },
-    savePhotoManager() {
-      ipcRenderer.send('save-photo-manager');
+    updatePerson(personUpdates: NewPersonData) {
+      ipcRenderer.send('update-person', personUpdates);
     },
     updatePhotoData(annotationData: PhotoUpdateData) {
       ipcRenderer.send('update-photo-data', annotationData);
-    },
-    scrubExifData(
-      photoIds: string[],
-      locationsToScrub: 'image-files-only' | 'image-files-and-database'
-    ) {
-      ipcRenderer.send('scrub-exif-data', photoIds, locationsToScrub);
     },
     on(channel: string, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>

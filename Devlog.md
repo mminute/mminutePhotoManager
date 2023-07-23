@@ -5,7 +5,8 @@
 - Remove the app level save button and update directly from photos/people etc
 - Photo filtering - What to do if there is a place name that appears multiple times for different country/state/cities?
 - Date picker in bulk actions - Edit menu gets cut off
-- Errror popovers in bulk actions - edits are buggy
+- Error popovers in bulk actions - edits are buggy
+- Replace bulk actions dropdown with buttons
 
 ### 2023-01-08
 - Added multi select logic
