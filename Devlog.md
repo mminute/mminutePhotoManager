@@ -7,6 +7,8 @@
 - Date picker in bulk actions - Edit menu gets cut off
 - Error popovers in bulk actions - edits are buggy
 - Replace bulk actions dropdown with buttons
+- Filter to only unannotated?
+- Sort directory tree alphabetically at each level
 
 ### 2023-01-08
 - Added multi select logic

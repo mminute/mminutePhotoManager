@@ -80,4 +80,16 @@ export default class PhotoManager {
       console.log(`${photoId} was deleted`);
     });
   }
+
+  movePhoto(photoId: string, targetDirectory: string) {
+    const filename = path.basename(photoId);
+    const newFilePath = path.join(targetDirectory, filename);
+
+    const targetPhoto = this.photos.find((p) => p.filePath === photoId);
+
+    if (targetPhoto) {
+      targetPhoto.filePath = newFilePath;
+      fs.renameSync(photoId, newFilePath);
+    }
+  }
 }

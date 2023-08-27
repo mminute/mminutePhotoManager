@@ -1,3 +1,4 @@
+import * as path from 'path';
 import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
 import Photo from './PhotoManager/Photo';
 import PhotoManager from './PhotoManager/PhotoManager';
@@ -193,6 +194,12 @@ export default class DataManager {
   bulkDeletePhotos(photoIds: string[]) {
     photoIds.forEach((photoId) => {
       this.#photoManager.deletePhoto(photoId);
+    });
+  }
+
+  bulkMovePhotos(photoIds: string[], targetDirectory: string) {
+    photoIds.forEach((photoId) => {
+      this.#photoManager.movePhoto(photoId, targetDirectory);
     });
   }
 }

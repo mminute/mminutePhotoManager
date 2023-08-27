@@ -36,6 +36,6 @@
   - [x] Edit
     - [x] Annotations
     - [x] EXIF metadata
-  - [ ] Move
+  - [x] Move
   - [x] Delete
 - [ ] Update save to happen on photo/person etc level and remove the app level button

@@ -96,6 +96,11 @@ export default class App extends React.Component<Props, State> {
       actions.BULK_DELETE_PHOTOS_SUCCESS,
       this.handlePhotosObtained
     );
+
+    window.electron.ipcRenderer.on(
+      actions.MOVE_FILES_SUCCESS,
+      this.handlePhotosObtained
+    );
   }
 
   componentWillUnmount() {
@@ -131,6 +136,11 @@ export default class App extends React.Component<Props, State> {
 
     window.electron.ipcRenderer.removeListener(
       actions.BULK_EDIT_PHOTOS_SUCCESS,
+      this.handlePhotosObtained
+    );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.MOVE_FILES_SUCCESS,
       this.handlePhotosObtained
     );
   }
