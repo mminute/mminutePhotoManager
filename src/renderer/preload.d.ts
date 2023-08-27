@@ -13,12 +13,14 @@ declare global {
         createPerson(newPerson: NewPersonData): void;
         deletePerson(targetId: string): void;
         deletePhotos(photoIds: string[]): void;
+        moveFiles(photoIds: string[], targetDirectory: string): void;
         savePhotoManager(): void;
         scrubExifData(
           photoIds: string[],
           locationsToScrub: 'image-files-only' | 'image-files-and-database'
         ): void;
         selectDirectory(): void;
+        selectMoveTarget(): void;
         updatePerson(personUpdates: NewPersonData): void;
         updatePhotoData(updatedData: PhotoUpdateData): void;
         on(

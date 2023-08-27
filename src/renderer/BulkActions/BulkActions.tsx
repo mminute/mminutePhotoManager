@@ -60,7 +60,14 @@ export default function BulkActions({
     case 'export':
       return <Export backToSelect={backToSelect} onDismiss={onDismiss} />;
     case 'move':
-      return <Move backToSelect={backToSelect} onDismiss={onDismiss} />;
+      return (
+        <Move
+          backToSelect={backToSelect}
+          onClearBulkSelection={onClearBulkSelection}
+          onDismiss={onDismiss}
+          selectedIds={selectedIds}
+        />
+      );
     case 'delete':
       return (
         <Delete

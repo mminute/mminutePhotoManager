@@ -17,6 +17,11 @@ export const actions = {
   BULK_DELETE_PHOTOS_SUCCESS: 'delete-photos-success',
   SCRUB_EXIF_DATA: 'scrub-exif-data',
   SCRUB_EXIF_DATA_SUCCES: 'scrub-exif-data-success',
+  SELECT_MOVE_TARGET: 'select-move-target',
+  SELECT_MOVE_TARGET_SUCCESS: 'select-move-target-success',
+  SELECT_MOVE_TARGET_FAILURE: 'select-move-target-failure',
+  MOVE_FILES: 'move-files',
+  MOVE_FILES_SUCCESS: 'move-files-success',
 };
 
 export default null;

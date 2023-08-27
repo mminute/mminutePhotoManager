@@ -193,6 +193,52 @@ ipcMain.on(actions.BULK_DELETE_PHOTOS, (event, photoIds) => {
   );
 });
 
+ipcMain.on(actions.SELECT_MOVE_TARGET, (event) => {
+  if (mainWindow) {
+    dialog
+      .showOpenDialog(mainWindow, {
+        title: 'Choose the destination directory',
+        properties: ['openDirectory'],
+      })
+      .then(({ canceled, filePaths }) => {
+        if (canceled) {
+          return;
+        }
+
+        const targetDirectory = filePaths[0];
+
+        const isValidSelection = !!targetDirectory.match(
+          `${currentDirectory}/`
+        );
+
+        if (isValidSelection) {
+          event.reply(actions.SELECT_MOVE_TARGET_SUCCESS, filePaths[0]);
+        } else {
+          event.reply(
+            actions.SELECT_MOVE_TARGET_FAILURE,
+            `Invalid folder selection. Choose '${currentDirectory}' or a subfolder.`
+          );
+        }
+      })
+      .catch(() => {});
+  }
+});
+
+ipcMain.on(actions.MOVE_FILES, (event, photoIds, targetDirectory) => {
+  dataManager.bulkMovePhotos(photoIds, targetDirectory);
+
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+
+  event.reply(
+    actions.MOVE_FILES_SUCCESS,
+    dataManager.photos,
+    dataManager.tags,
+    dataManager.placesMap,
+    dataManager.citiesMap,
+    dataManager.people
+  );
+});
+
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();

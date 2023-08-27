@@ -27,7 +27,7 @@ export default class Photo {
 
   filePath: string;
 
-  filename: string;
+  filename: string; // TODO: .filename is only referenced in this file. Can it be deleted?
 
   metadata: Metadata;
 
