@@ -105,7 +105,7 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
               fs.writeFileSync(filepath, JSON.stringify(dataObject));
             }
 
-            dataManager.initialize({ data: dataObject, imagePaths });
+            dataManager.initialize({ currentDirectory, data: dataObject, imagePaths });
 
             event.reply(
               actions.FILEPATHS_OBTAINED,
@@ -208,7 +208,7 @@ ipcMain.on(actions.SELECT_MOVE_TARGET, (event) => {
         const targetDirectory = filePaths[0];
 
         const isValidSelection = !!targetDirectory.match(
-          `${currentDirectory}/`
+          `${currentDirectory}`
         );
 
         if (isValidSelection) {

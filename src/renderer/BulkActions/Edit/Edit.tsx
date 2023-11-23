@@ -61,8 +61,8 @@ export default function Edit({
           data: {
             base64: '',
             filePath: '',
-            filename: '',
             metadata: defaultMetadata,
+            relativePath: '',
             userAnnotations: new UserAnnotationData({
               people: selectedPeople,
               title: title ?? '',
