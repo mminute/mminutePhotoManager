@@ -9,6 +9,10 @@
 - Replace bulk actions dropdown with buttons
 - Filter to only unannotated?
 - Sort directory tree alphabetically at each level
+- ~~Update filepaths to only store the filepath relative to the selected directory~~
+  - ~~Append the directory to the photo filepath when you need to access the image~~
+  - ~~This way the directory can be moved without causing issues with the data~~
+- Instead of updating file path to be relative I'm going to be lazy and add an attribute to the `Photo()` that is just the relative path when each object is instantiated
 
 ### 2023-01-08
 - Added multi select logic
