@@ -34,7 +34,6 @@ export default class PhotoManager {
           data: d,
           fileHandlers,
           getImageSize,
-          filename: path.basename(d.filePath),
         })
     );
 
@@ -46,7 +45,6 @@ export default class PhotoManager {
             filePath,
             fileHandlers,
             getImageSize,
-            filename: path.basename(filePath),
           })
       ),
     ];

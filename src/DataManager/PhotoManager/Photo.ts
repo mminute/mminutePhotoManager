@@ -8,7 +8,6 @@ import UserAnnotationData from './UserAnnotationData';
 interface PhotoData {
   base64: string;
   filePath: string;
-  filename: string;
   metadata: Metadata;
   userAnnotations: UserAnnotationData;
 }
@@ -21,13 +20,11 @@ interface FileHandlers {
 export default class Photo {
   base64: string;
 
-  #binary: string;
+  #binary: string | undefined;
 
   #fileHandlers: FileHandlers;
 
   filePath: string;
-
-  filename: string; // TODO: .filename is only referenced in this file. Can it be deleted?
 
   metadata: Metadata;
 
@@ -39,28 +36,26 @@ export default class Photo {
 
   constructor({
     data,
-    filename,
     filePath,
     fileHandlers,
     getImageSize,
   }: {
     data?: PhotoData;
-    filename: string;
     filePath?: string;
     fileHandlers: FileHandlers;
     getImageSize: (filepath: string) => ISizeCalculationResult;
   }) {
     this.#fileHandlers = fileHandlers;
 
+    // TODO: Maybe store the filePath minus the current directory as the `id` here
+
     if (data) {
       this.base64 = data.base64;
       this.filePath = data.filePath;
-      this.filename = data.filename;
       this.metadata = data.metadata;
       this.userAnnotations = new UserAnnotationData(data.userAnnotations);
     } else if (filePath) {
       this.filePath = filePath;
-      this.filename = filename;
 
       const fileContents = this.#fileHandlers.readFileSync(filePath);
 
@@ -105,7 +100,6 @@ export default class Photo {
       // Data passed in to constructor is either `data` or `filePath` so we should never get to this case
       this.base64 = '';
       this.filePath = '';
-      this.filename = '';
       this.metadata = defaultMetadata;
       this.userAnnotations = new UserAnnotationData({
         date: '',
