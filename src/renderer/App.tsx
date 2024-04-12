@@ -101,6 +101,11 @@ export default class App extends React.Component<Props, State> {
       actions.MOVE_FILES_SUCCESS,
       this.handlePhotosObtained
     );
+
+    window.electron.ipcRenderer.on(
+      actions.EXPORT_PHOTOS_SUCCESS,
+      this.handleExportSuccess
+    );
   }
 
   componentWillUnmount() {
@@ -143,6 +148,11 @@ export default class App extends React.Component<Props, State> {
       actions.MOVE_FILES_SUCCESS,
       this.handlePhotosObtained
     );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.EXPORT_PHOTOS_SUCCESS,
+      this.handleExportSuccess
+    );
   }
 
   handleFilepathsObtained = (
@@ -177,7 +187,15 @@ export default class App extends React.Component<Props, State> {
       toastText: 'EXIF data deleted!',
     });
 
-    setTimeout(() => this.setState({ toastText: null }), 900);
+    setTimeout(() => this.setState({ toastText: null }), 1100);
+  };
+
+  handleExportSuccess = () => {
+    this.setState({
+      toastText: 'Photos exported!',
+    });
+
+    setTimeout(() => this.setState({ toastText: null }), 1100);
   };
 
   handlePeopleUpdated = (people: Person[]) => {

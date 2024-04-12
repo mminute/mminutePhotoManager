@@ -30,12 +30,13 @@
   - [x] Date/Date range
 - [ ] Filter and search people
 - [x] Folder/File tree
-- [ ] Bulk actions
+- [x] Bulk actions
   - [x] Select/Unselect
-  - [ ] Export
+  - [x] Export
   - [x] Edit
     - [x] Annotations
     - [x] EXIF metadata
   - [x] Move
   - [x] Delete
 - [ ] Update save to happen on photo/person etc level and remove the app level button
+- [ ] Edit: rotate images

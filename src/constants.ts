@@ -1,8 +1,12 @@
 export const actions = {
   BULK_EDIT_PHOTOS: 'bulk-edit-photos',
   BULK_EDIT_PHOTOS_SUCCESS: 'bulk-edit-photos-success',
+  EXPORT_PHOTOS: 'export-photos',
+  EXPORT_PHOTOS_SUCCESS: 'export-photos-success',
   FILEPATHS_OBTAINED: 'filepaths-obtained',
   SELECT_DIRECTORY: 'select-directory',
+  SELECT_EXPORT_DIRECTORY: 'select-export-directory',
+  SELECT_EXPORT_DIRECTORY_SUCCESS: 'select-export-directory-success',
   SAVE_PHOTO_MANAGER: 'save-photo-manager',
   SAVE_PHOTO_MANAGER_SUCCESS: 'save-photo-manager-success',
   UPDATE_PHOTO_DATA: 'update-photo-data',

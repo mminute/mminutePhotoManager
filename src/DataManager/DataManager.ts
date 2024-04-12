@@ -7,6 +7,7 @@ import { PhotoUpdateData } from '../renderer/PhotoView/types';
 import PeopleManager, { NewPersonData } from './PeopleManager/PeopleManager';
 import Person from './PeopleManager/Person';
 import { OnUpdateArgs } from 'renderer/BulkActions/Edit/Annotations';
+import UserAnnotationData from './PhotoManager/UserAnnotationData';
 
 export type MaybeString = string | null;
 
@@ -17,6 +18,19 @@ export type PlaceType = {
   stateProvince: MaybeString;
   city: MaybeString;
 };
+
+export interface PhotoExport {
+  filepath: string;
+  relativePath: string;
+  height: number | undefined;
+  width: number | undefined;
+  userAnnotations: UserAnnotationData;
+}
+
+export interface ExportData {
+  photos: (PhotoExport | null)[];
+  people: (Person | undefined)[];
+}
 
 function updateCitiesMap(place: UserAnnotationPlace, citiesMap: CitiesMapType) {
   if (place.country.value && place.stateProvince.value && place.city) {
@@ -75,9 +89,11 @@ export default class DataManager {
   #citiesMap: CitiesMapType = {};
 
   initialize({
+    currentDirectory,
     data,
     imagePaths,
   }: {
+    currentDirectory: string;
     data: InitialData;
     imagePaths: string[];
   }) {
@@ -106,7 +122,7 @@ export default class DataManager {
       this.#placesMap = places;
       this.#citiesMap = citiesMap;
 
-      this.#photoManager.initialize({ data: dataPhotos, imagePaths });
+      this.#photoManager.initialize({ currentDirectory, data: dataPhotos, imagePaths });
       this.#peopleManager.initialize(dataPeople);
     }
   }
@@ -201,5 +217,38 @@ export default class DataManager {
     photoIds.forEach((photoId) => {
       this.#photoManager.movePhoto(photoId, targetDirectory);
     });
+  }
+
+  buildExport(photoIds: string[]): ExportData {
+    const photosToExport = photoIds.map((photoId) => {
+      const photoObject = this.#photoManager.photos.find(
+        (p) => p.filePath === photoId
+      );
+
+      if (!photoObject) {
+        // Shouldn't get here. Could throw an error
+        return null;
+      }
+
+      return {
+        filepath: photoObject.filePath,
+        relativePath: photoObject.relativePath,
+        height: photoObject.height,
+        width: photoObject.width,
+        userAnnotations: photoObject.userAnnotations,
+      };
+    });
+
+    const people = Array.from(
+      new Set(
+        photosToExport
+          .map((photoData) => photoData?.userAnnotations?.people)
+          .flat()
+      )
+    ).map((personId) =>
+      this.#peopleManager.people.find((p) => p.id === personId)
+    );
+
+    return { photos: photosToExport, people };
   }
 }

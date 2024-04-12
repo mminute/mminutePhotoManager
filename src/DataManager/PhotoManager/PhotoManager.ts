@@ -14,9 +14,21 @@ function writeFileSync(filePath: string, fileBuffer: Buffer) {
 }
 
 export default class PhotoManager {
+  #currentDirectory: string;
+
   photos: Photo[] = [];
 
-  initialize({ data, imagePaths }: { data: Photo[]; imagePaths: string[] }) {
+  initialize({
+    currentDirectory,
+    data,
+    imagePaths,
+  }: {
+    currentDirectory: string;
+    data: Photo[];
+    imagePaths: string[];
+  }) {
+    this.#currentDirectory = currentDirectory;
+
     const existingPhotoFilepaths = data.map((itm) => itm.filePath);
 
     const newPhotos = imagePaths.filter(
@@ -31,10 +43,10 @@ export default class PhotoManager {
     const existingPhotos = data.map(
       (d) =>
         new Photo({
+          currentDirectory,
           data: d,
           fileHandlers,
           getImageSize,
-          filename: path.basename(d.filePath),
         })
     );
 
@@ -43,10 +55,10 @@ export default class PhotoManager {
       ...newPhotos.map(
         (filePath) =>
           new Photo({
+            currentDirectory,
             filePath,
             fileHandlers,
             getImageSize,
-            filename: path.basename(filePath),
           })
       ),
     ];
@@ -88,6 +100,11 @@ export default class PhotoManager {
     const targetPhoto = this.photos.find((p) => p.filePath === photoId);
 
     if (targetPhoto) {
+      targetPhoto.relativePath = newFilePath.replace(
+        `${this.#currentDirectory}/`,
+        ''
+      );
+
       targetPhoto.filePath = newFilePath;
       fs.renameSync(photoId, newFilePath);
     }

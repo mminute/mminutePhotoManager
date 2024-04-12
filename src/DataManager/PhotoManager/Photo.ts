@@ -8,8 +8,8 @@ import UserAnnotationData from './UserAnnotationData';
 interface PhotoData {
   base64: string;
   filePath: string;
-  filename: string;
   metadata: Metadata;
+  relativePath: string;
   userAnnotations: UserAnnotationData;
 }
 
@@ -19,33 +19,37 @@ interface FileHandlers {
 }
 
 export default class Photo {
-  base64: string;
-
-  #binary: string;
+  #binary: string | undefined;
 
   #fileHandlers: FileHandlers;
 
+  base64: string;
+
   filePath: string;
-
-  filename: string; // TODO: .filename is only referenced in this file. Can it be deleted?
-
-  metadata: Metadata;
 
   height: number | undefined;
 
-  width: number | undefined;
+  metadata: Metadata;
+
+  // `relativePath` could be derived from `this.filePath`
+  // but since there is already a lot of logic referencing `this.filePath`
+  // I'm being lazy and just adding another field on `Photo`
+  // specifically for the purpose of exporting a photo collection
+  relativePath: string;
 
   userAnnotations: UserAnnotationData;
 
+  width: number | undefined;
+
   constructor({
+    currentDirectory,
     data,
-    filename,
     filePath,
     fileHandlers,
     getImageSize,
   }: {
+    currentDirectory: string;
     data?: PhotoData;
-    filename: string;
     filePath?: string;
     fileHandlers: FileHandlers;
     getImageSize: (filepath: string) => ISizeCalculationResult;
@@ -55,12 +59,12 @@ export default class Photo {
     if (data) {
       this.base64 = data.base64;
       this.filePath = data.filePath;
-      this.filename = data.filename;
       this.metadata = data.metadata;
+      this.relativePath = data.relativePath;
       this.userAnnotations = new UserAnnotationData(data.userAnnotations);
     } else if (filePath) {
       this.filePath = filePath;
-      this.filename = filename;
+      this.relativePath = filePath.replace(`${currentDirectory}/`, '');
 
       const fileContents = this.#fileHandlers.readFileSync(filePath);
 
@@ -105,8 +109,8 @@ export default class Photo {
       // Data passed in to constructor is either `data` or `filePath` so we should never get to this case
       this.base64 = '';
       this.filePath = '';
-      this.filename = '';
       this.metadata = defaultMetadata;
+      this.relativePath = '';
       this.userAnnotations = new UserAnnotationData({
         date: '',
         description: '',

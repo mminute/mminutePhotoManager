@@ -18,7 +18,7 @@ import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 import { actions } from '../constants';
-import DataManager from '../DataManager/DataManager';
+import DataManager, { PhotoExport } from '../DataManager/DataManager';
 
 export default class AppUpdater {
   constructor() {
@@ -105,7 +105,11 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
               fs.writeFileSync(filepath, JSON.stringify(dataObject));
             }
 
-            dataManager.initialize({ data: dataObject, imagePaths });
+            dataManager.initialize({
+              currentDirectory,
+              data: dataObject,
+              imagePaths,
+            });
 
             event.reply(
               actions.FILEPATHS_OBTAINED,
@@ -121,6 +125,52 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
       })
       .catch(() => {});
   }
+});
+
+ipcMain.on(actions.SELECT_EXPORT_DIRECTORY, (event) => {
+  if (mainWindow) {
+    dialog
+      .showOpenDialog(mainWindow, {
+        title: 'Select your export destination',
+        properties: ['openDirectory', 'createDirectory'],
+      })
+      .then((data) => {
+        event.reply(actions.SELECT_EXPORT_DIRECTORY_SUCCESS, data.filePaths[0]);
+      })
+      .catch(() => {});
+  }
+});
+
+ipcMain.on(actions.EXPORT_PHOTOS, (event, photoIds, targetDirectory) => {
+  // TODO: Update filepath for each photo to be relative to the targetDirectory
+  const exportData = dataManager.buildExport(photoIds);
+
+  exportData.photos.forEach((photoData: PhotoExport | null) => {
+    if (!photoData) {
+      return;
+    }
+
+    const newFilePath = `${targetDirectory}/${photoData.relativePath}`;
+
+    fs.mkdirSync(path.dirname(newFilePath), { recursive: true });
+    fs.copyFileSync(photoData.filepath, newFilePath);
+  });
+
+  const targetDataFile = `${targetDirectory}/photoManager.json`;
+  // Remove the absolute file path from the export data
+  const cleanExportData = {
+    ...exportData,
+    photos: exportData.photos.map((photoData) => ({
+      path: photoData?.relativePath,
+      height: photoData?.height,
+      width: photoData?.width,
+      userAnnotations: photoData?.userAnnotations,
+    })),
+  };
+
+  fs.writeFileSync(targetDataFile, JSON.stringify(cleanExportData));
+
+  event.reply(actions.EXPORT_PHOTOS_SUCCESS);
 });
 
 ipcMain.on(actions.SAVE_PHOTO_MANAGER, (event) => {
@@ -207,9 +257,7 @@ ipcMain.on(actions.SELECT_MOVE_TARGET, (event) => {
 
         const targetDirectory = filePaths[0];
 
-        const isValidSelection = !!targetDirectory.match(
-          `${currentDirectory}/`
-        );
+        const isValidSelection = !!targetDirectory.match(`${currentDirectory}`);
 
         if (isValidSelection) {
           event.reply(actions.SELECT_MOVE_TARGET_SUCCESS, filePaths[0]);

@@ -1,14 +1,22 @@
 # Dev Log
 
 ## TODOS:
+- Warn if importing duplicate image?
 - Build base64 string each time since someone may have replaced the photo
 - Remove the app level save button and update directly from photos/people etc
 - Photo filtering - What to do if there is a place name that appears multiple times for different country/state/cities?
 - Date picker in bulk actions - Edit menu gets cut off
 - Error popovers in bulk actions - edits are buggy
-- Replace bulk actions dropdown with buttons
+- ✅ Replace bulk actions dropdown with buttons
 - Filter to only unannotated?
 - Sort directory tree alphabetically at each level
+- ~~Update filepaths to only store the filepath relative to the selected directory~~
+  - ~~Append the directory to the photo filepath when you need to access the image~~
+  - ~~This way the directory can be moved without causing issues with the data~~
+- ✅ Instead of updating file path to be relative I'm going to be lazy and add an attribute to the `Photo()` that is just the relative path when each object is instantiated
+
+### 2024-04-11
+- Finished export functionality -> exporting image and data to a new folder
 
 ### 2023-01-08
 - Added multi select logic
