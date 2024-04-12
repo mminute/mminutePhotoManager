@@ -17,6 +17,9 @@ contextBridge.exposeInMainWorld('electron', {
     deletePhotos(photoIds: string[]) {
       ipcRenderer.send('delete-photos', photoIds);
     },
+    exportPhotos(photoIds: string[], targetDirectory: string) {
+      ipcRenderer.send('export-photos', photoIds, targetDirectory);
+    },
     moveFiles(photoIds: string[], targetDirectory: string) {
       ipcRenderer.send('move-files', photoIds, targetDirectory);
     },
@@ -38,6 +41,9 @@ contextBridge.exposeInMainWorld('electron', {
       //   console.log(msgTemplate(arg));
       //   event.reply('ipc-example', msgTemplate('pong'));
       // });
+    },
+    selectExportDirectory() {
+      ipcRenderer.send('select-export-directory');
     },
     selectMoveTarget() {
       ipcRenderer.send('select-move-target');
