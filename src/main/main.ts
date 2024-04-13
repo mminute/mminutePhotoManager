@@ -52,6 +52,10 @@ function pushToRecentDirectories(newDirectory: string) {
   localStore.set(RecentDirectoriesKey, updatedDirectories);
 }
 
+function handleSave() {
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+}
+
 ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
   if (mainWindow) {
     dialog
@@ -176,7 +180,7 @@ ipcMain.on(actions.EXPORT_PHOTOS, (event, photoIds, targetDirectory) => {
 ipcMain.on(actions.UPDATE_PHOTO_DATA, (event, annotationData) => {
   dataManager.updatePhoto(annotationData);
 
-  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+  handleSave();
 
   event.reply(
     actions.UPDATE_PHOTO_DATA_COMPLETE,
@@ -190,16 +194,19 @@ ipcMain.on(actions.UPDATE_PHOTO_DATA, (event, annotationData) => {
 
 ipcMain.on(actions.CREATE_PERSON, (event, personData) => {
   dataManager.createPerson(personData);
+  handleSave();
   event.reply(actions.CREATE_PERSON_SUCCESS, dataManager.people);
 });
 
 ipcMain.on(actions.UPDATE_PERSON, (event, updateData) => {
   dataManager.updatePerson(updateData);
+  handleSave();
   event.reply(actions.UPDATE_PERSON_SUCCESS, dataManager.people);
 });
 
 ipcMain.on(actions.DELETE_PERSON, (event, targetId) => {
   dataManager.deletePerson(targetId);
+  handleSave();
   event.reply(
     actions.DELETE_PERSON_SUCCESS,
     dataManager.photos,
@@ -209,13 +216,13 @@ ipcMain.on(actions.DELETE_PERSON, (event, targetId) => {
 
 ipcMain.on(actions.SCRUB_EXIF_DATA, (event, photoIds, locationsToScrub) => {
   dataManager.scrubExifData(photoIds, locationsToScrub);
-  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+  handleSave();
   event.reply(actions.SCRUB_EXIF_DATA_SUCCES, dataManager.photos);
 });
 
 ipcMain.on(actions.BULK_EDIT_PHOTOS, (event, photoIds, updateData) => {
   dataManager.bulkUpdatePhotos(photoIds, updateData);
-
+  handleSave();
   event.reply(
     actions.BULK_EDIT_PHOTOS_SUCCESS,
     dataManager.photos,
@@ -228,7 +235,7 @@ ipcMain.on(actions.BULK_EDIT_PHOTOS, (event, photoIds, updateData) => {
 
 ipcMain.on(actions.BULK_DELETE_PHOTOS, (event, photoIds) => {
   dataManager.bulkDeletePhotos(photoIds);
-
+  handleSave();
   event.reply(
     actions.BULK_DELETE_PHOTOS_SUCCESS,
     dataManager.photos,
@@ -271,7 +278,7 @@ ipcMain.on(actions.SELECT_MOVE_TARGET, (event) => {
 ipcMain.on(actions.MOVE_FILES, (event, photoIds, targetDirectory) => {
   dataManager.bulkMovePhotos(photoIds, targetDirectory);
 
-  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
+  handleSave();
 
   event.reply(
     actions.MOVE_FILES_SUCCESS,
