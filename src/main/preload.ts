@@ -23,9 +23,6 @@ contextBridge.exposeInMainWorld('electron', {
     moveFiles(photoIds: string[], targetDirectory: string) {
       ipcRenderer.send('move-files', photoIds, targetDirectory);
     },
-    savePhotoManager() {
-      ipcRenderer.send('save-photo-manager');
-    },
     scrubExifData(
       photoIds: string[],
       locationsToScrub: 'image-files-only' | 'image-files-and-database'
