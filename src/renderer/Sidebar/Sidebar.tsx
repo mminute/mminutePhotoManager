@@ -1,5 +1,5 @@
 import './Sidebar.css';
-import { Box, Button, Flex } from 'gestalt';
+import { Box, Flex } from 'gestalt';
 import { useLocation } from 'react-router-dom';
 import FileTree from 'renderer/FileTree/FileTree';
 import { DirectoryData } from 'renderer/utils/buildFileTree';
@@ -26,16 +26,6 @@ export default function Sidebar({
   return (
     <div className="sidebar sidebar-transition" style={{ left: `${left}px` }}>
       <Flex direction="column" height="100vh">
-        <Button
-          color="red"
-          text="Save"
-          size="sm"
-          fullWidth
-          onClick={() => {
-            window.electron.ipcRenderer.savePhotoManager();
-          }}
-        />
-
         <Box marginStart={4}>
           <FileTree
             activePath={activePath}

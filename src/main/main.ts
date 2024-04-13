@@ -173,14 +173,10 @@ ipcMain.on(actions.EXPORT_PHOTOS, (event, photoIds, targetDirectory) => {
   event.reply(actions.EXPORT_PHOTOS_SUCCESS);
 });
 
-ipcMain.on(actions.SAVE_PHOTO_MANAGER, (event) => {
-  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
-
-  event.reply(actions.SAVE_PHOTO_MANAGER_SUCCESS);
-});
-
 ipcMain.on(actions.UPDATE_PHOTO_DATA, (event, annotationData) => {
   dataManager.updatePhoto(annotationData);
+
+  fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
 
   event.reply(
     actions.UPDATE_PHOTO_DATA_COMPLETE,

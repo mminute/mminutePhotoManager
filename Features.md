@@ -40,3 +40,4 @@
   - [x] Delete
 - [ ] Update save to happen on photo/person etc level and remove the app level button
 - [ ] Edit: rotate images
+- [ ] Unannotated filter
