@@ -11,6 +11,7 @@ interface PhotoData {
   metadata: Metadata;
   relativePath: string;
   userAnnotations: UserAnnotationData;
+  isAnnotated: boolean;
 }
 
 interface FileHandlers {
@@ -28,6 +29,8 @@ export default class Photo {
   filePath: string;
 
   height: number | undefined;
+
+  isAnnotated: boolean;
 
   metadata: Metadata;
 
@@ -62,6 +65,7 @@ export default class Photo {
       this.metadata = data.metadata;
       this.relativePath = data.relativePath;
       this.userAnnotations = new UserAnnotationData(data.userAnnotations);
+      this.isAnnotated = data.isAnnotated;
     } else if (filePath) {
       this.filePath = filePath;
       this.relativePath = filePath.replace(`${currentDirectory}/`, '');
@@ -105,6 +109,8 @@ export default class Photo {
         tags: [],
         title: '',
       });
+
+      this.isAnnotated = false;
     } else {
       // Data passed in to constructor is either `data` or `filePath` so we should never get to this case
       this.base64 = '';
@@ -124,6 +130,8 @@ export default class Photo {
         tags: [],
         title: '',
       });
+
+      this.isAnnotated = false;
     }
   }
 
@@ -157,6 +165,8 @@ export default class Photo {
       title,
       tags,
     });
+
+    this.isAnnotated = true;
   }
 
   deletePerson(targetId: string) {

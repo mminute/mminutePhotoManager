@@ -1,4 +1,4 @@
-import { CitiesMapType, PlaceType } from 'DataManager/DataManager';
+import { PlaceType } from 'DataManager/DataManager';
 import Person from 'DataManager/PeopleManager/Person';
 import Photo from 'DataManager/PhotoManager/Photo';
 import { Tag } from 'gestalt';
@@ -8,25 +8,27 @@ import 'gestalt-datepicker/dist/gestalt-datepicker.css';
 import PhotoGallerySearchFilterModal, {
   AnyAll,
   OnBetween,
+  AnnotationStatus,
 } from './PhotoGallerySearchFilterModal';
 import PhotoFilter, { CurrentFilters } from './PhotoFilter';
 
 const DEFAULT_FILTER_STATE = {
+  annotationStatus: 'all',
+  dateMode: 'on',
+  endDate: undefined,
+  peopleMode: 'any',
+  searchDescriptions: true,
   searchTerm: '',
   searchTitles: true,
-  searchDescriptions: true,
-  selectedPlaces: [],
-  selectedTags: [],
-  tagMode: 'any',
-  selectedPeopleIds: [],
-  peopleMode: 'any',
-  startDate: undefined,
-  endDate: undefined,
-  dateMode: 'on',
-  selectedCountry: undefined,
-  selectedState: undefined,
   selectedCity: undefined,
-};
+  selectedCountry: undefined,
+  selectedPeopleIds: [],
+  selectedPlaces: [],
+  selectedState: undefined,
+  selectedTags: [],
+  startDate: undefined,
+  tagMode: 'any',
+} as CurrentFilters;
 
 function getIsFiltering(filters: CurrentFilters) {
   return (
@@ -35,7 +37,8 @@ function getIsFiltering(filters: CurrentFilters) {
     !!filters.selectedTags.length ||
     !!filters.selectedPeopleIds.length ||
     filters.startDate !== DEFAULT_FILTER_STATE.startDate ||
-    !!filters.selectedCountry // State and city selection requires a country to be selected
+    !!filters.selectedCountry || // State and city selection requires a country to be selected
+    filters.annotationStatus !== 'all'
   );
 }
 
@@ -85,10 +88,13 @@ export default function PhotoGallerySearchFilter({
   const [selectedCountry, setSelectedCountry] = useState<string | undefined>();
   const [selectedState, setSelectedState] = useState<string | undefined>();
   const [selectedCity, setSelectedCity] = useState<string | undefined>();
+  // Annotation status
+  const [annotationStatus, setAnnotationStatus] =
+    useState<AnnotationStatus>('all');
 
   // Ref to shadow the applied filters
   const filterStateRef = useRef(DEFAULT_FILTER_STATE);
-  const updateFilterStateRef = (newState) => {
+  const updateFilterStateRef = (newState: CurrentFilters) => {
     filterStateRef.current = newState;
   };
 
@@ -173,20 +179,21 @@ export default function PhotoGallerySearchFilter({
 
   const handleClear = () => {
     // Reset filter values
+    setAnnotationStatus('all');
+    setDateMode('on');
+    setEndDate(undefined);
+    setPeopleMode('any');
+    setSearchDescriptions(true);
     setSearchTerm('');
     setSearchTitles(true);
-    setSearchDescriptions(true);
-    setSelectedPlaces([]);
-    setSelectedTags([]);
-    setTagMode('any');
-    setSelectedPeopleIds([]);
-    setPeopleMode('any');
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setDateMode('on');
-    setSelectedCountry(undefined);
-    setSelectedState(undefined);
     setSelectedCity(undefined);
+    setSelectedCountry(undefined);
+    setSelectedPeopleIds([]);
+    setSelectedPlaces([]);
+    setSelectedState(undefined);
+    setSelectedTags([]);
+    setStartDate(undefined);
+    setTagMode('any');
   };
 
   const handleDismiss = () => {
@@ -194,38 +201,40 @@ export default function PhotoGallerySearchFilter({
 
     const currentRef = filterStateRef.current;
 
+    setAnnotationStatus(currentRef.annotationStatus);
+    setDateMode(currentRef.dateMode);
+    setEndDate(currentRef.endDate);
+    setPeopleMode(currentRef.peopleMode);
+    setSearchDescriptions(currentRef.searchDescriptions);
     setSearchTerm(currentRef.searchTerm);
     setSearchTitles(currentRef.searchTitles);
-    setSearchDescriptions(currentRef.searchDescriptions);
-    setSelectedPlaces(currentRef.selectedPlaces);
-    setSelectedTags(currentRef.selectedTags);
-    setTagMode(currentRef.tagMode);
-    setSelectedPeopleIds(currentRef.selectedPeopleIds);
-    setPeopleMode(currentRef.peopleMode);
-    setStartDate(currentRef.startDate);
-    setEndDate(currentRef.endDate);
-    setDateMode(currentRef.dateMode);
-    setSelectedCountry(currentRef.selectedCountry);
-    setSelectedState(currentRef.selectedState);
     setSelectedCity(currentRef.selectedCity);
+    setSelectedCountry(currentRef.selectedCountry);
+    setSelectedPeopleIds(currentRef.selectedPeopleIds);
+    setSelectedPlaces(currentRef.selectedPlaces);
+    setSelectedState(currentRef.selectedState);
+    setSelectedTags(currentRef.selectedTags);
+    setStartDate(currentRef.startDate);
+    setTagMode(currentRef.tagMode);
   };
 
   const handleFilter = () => {
     updateFilterStateRef({
+      annotationStatus,
+      dateMode,
+      endDate,
+      peopleMode,
+      searchDescriptions,
       searchTerm,
       searchTitles,
-      searchDescriptions,
-      selectedPlaces,
-      selectedTags,
-      tagMode,
-      selectedPeopleIds,
-      peopleMode,
-      startDate,
-      endDate,
-      dateMode,
-      selectedCountry,
-      selectedState,
       selectedCity,
+      selectedCountry,
+      selectedPeopleIds,
+      selectedPlaces,
+      selectedState,
+      selectedTags,
+      startDate,
+      tagMode,
     });
 
     setFiltersOpen(false);
@@ -284,12 +293,17 @@ export default function PhotoGallerySearchFilter({
 
   return (
     <>
-      <PhotoFilter currentFilters={filterStateRef.current} photos={photos}>
+      <PhotoFilter
+        currentFilters={filterStateRef.current as CurrentFilters}
+        photos={photos}
+      >
         {({ filteredPhotos }) =>
           children({
             filteredPhotos,
             onOpenFilters: () => setFiltersOpen(true),
-            isFiltering: getIsFiltering(filterStateRef.current),
+            isFiltering: getIsFiltering(
+              filterStateRef.current as CurrentFilters
+            ),
           })
         }
       </PhotoFilter>
@@ -334,6 +348,8 @@ export default function PhotoGallerySearchFilter({
           tagMode={tagMode}
           tagsWithLabels={tagsWithLabels}
           stateOptions={stateOptions}
+          annotationStatus={annotationStatus}
+          setAnnotationStatus={setAnnotationStatus}
         />
       )}
     </>

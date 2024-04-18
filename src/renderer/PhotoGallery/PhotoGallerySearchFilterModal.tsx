@@ -34,13 +34,13 @@ function ButtonsFieldRow({
   field,
 }: {
   buttons: ReactElement;
-  field: ReactElement;
+  field: ReactElement | null;
 }) {
   return (
     <Box display="flex" direction="row">
       <Column span={2}>{buttons}</Column>
 
-      <Column span={10}>{field}</Column>
+      {field && <Column span={10}>{field}</Column>}
     </Box>
   );
 }
@@ -64,8 +64,10 @@ type PlaceLabel = {
   stateProvince: MaybeString;
   city: MaybeString;
 };
+export type AnnotationStatus = 'all' | 'annotated' | 'unannotated';
 
 interface Props {
+  annotationStatus: AnnotationStatus;
   cityOptions: Labels[];
   countryOptions: Labels[];
   dateMode: OnBetween;
@@ -82,6 +84,10 @@ interface Props {
   searchDescriptions: boolean;
   searchTerm: string;
   searchTitles: boolean;
+  selectedCity: string | undefined;
+  selectedCountry: string | undefined;
+  selectedState: string | undefined;
+  setAnnotationStatus: (status: AnnotationStatus) => void;
   setDateMode: (mode: OnBetween) => void;
   setEndDate: (value: React.SetStateAction<Date | undefined>) => void;
   setFiltersOpen: (open: boolean) => void;
@@ -89,8 +95,11 @@ interface Props {
   setSearchDescriptions: (searchDescriptions: boolean) => void;
   setSearchTerm: (searchTerm: string) => void;
   setSearchTitles: (searchTitles: boolean) => void;
+  setSelectedCity: (value: React.SetStateAction<string | undefined>) => void;
+  setSelectedCountry: (value: React.SetStateAction<string | undefined>) => void;
   setSelectedPeopleIds: (value: React.SetStateAction<string[]>) => void;
   setSelectedPlaces: (value: React.SetStateAction<string[]>) => void;
+  setSelectedState: (value: React.SetStateAction<string | undefined>) => void;
   setSelectedTags: (value: React.SetStateAction<string[]>) => void;
   setStartDate: (value: React.SetStateAction<Date | undefined>) => void;
   setTagMode: (mode: AnyAll) => void;
@@ -98,15 +107,10 @@ interface Props {
   stateOptions: Labels[];
   tagMode: AnyAll;
   tagsWithLabels: Labels[];
-  selectedCountry: string | undefined;
-  setSelectedCountry: (value: React.SetStateAction<string | undefined>) => void;
-  selectedState: string | undefined;
-  setSelectedState: (value: React.SetStateAction<string | undefined>) => void;
-  selectedCity: string | undefined;
-  setSelectedCity: (value: React.SetStateAction<string | undefined>) => void;
 }
 
 export default function PhotoGallerySearchFilterModal({
+  annotationStatus,
   cityOptions,
   countryOptions,
   dateMode,
@@ -126,6 +130,7 @@ export default function PhotoGallerySearchFilterModal({
   selectedCity,
   selectedCountry,
   selectedState,
+  setAnnotationStatus,
   setDateMode,
   setEndDate,
   setFiltersOpen,
@@ -169,6 +174,36 @@ export default function PhotoGallerySearchFilterModal({
         }
       >
         <Box padding={8}>
+          <ButtonsFieldRow
+            buttons={
+              <VerticalFieldSet legend="Annotation status:">
+                <RadioButton
+                  checked={annotationStatus === 'all'}
+                  label="All"
+                  onChange={() => setAnnotationStatus('all')}
+                  value="all"
+                />
+
+                <RadioButton
+                  checked={annotationStatus === 'unannotated'}
+                  label="Unannotated"
+                  onChange={() => setAnnotationStatus('unannotated')}
+                  value="unannotated"
+                />
+
+                <RadioButton
+                  checked={annotationStatus === 'annotated'}
+                  label="Annotated"
+                  onChange={() => setAnnotationStatus('annotated')}
+                  value="annotated"
+                />
+              </VerticalFieldSet>
+            }
+            field={null}
+          />
+
+          <PaddedDivider />
+
           <ButtonsFieldRow
             buttons={
               <VerticalFieldSet legend="Search in:">

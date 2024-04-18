@@ -257,6 +257,14 @@ export default class App extends React.Component<Props, State> {
 
     const activePhoto = photos.find((p) => p.filePath === activePhotoId);
 
+    const unannotatedCount = photos.reduce((prevValue, photo) => {
+      if (!photo.isAnnotated) {
+        return prevValue + 1;
+      }
+
+      return prevValue;
+    }, 0);
+
     return (
       <>
         <Router>
@@ -267,6 +275,7 @@ export default class App extends React.Component<Props, State> {
             }
             currentDirectory={currentDirectory}
             fileTree={fileTree}
+            unannotatedCount={unannotatedCount}
           />
           <PageWrapper>
             <Routes>
