@@ -21,6 +21,7 @@
   - [ ] Sort table view
   - [x] Edit people
   - [x] Delete people
+  - [ ] Filter and search people
 - [x] Filter and search photos
   - [x] Location
   - [x] Tags
@@ -28,7 +29,6 @@
   - [x] Title
   - [x] Description
   - [x] Date/Date range
-- [ ] Filter and search people
 - [x] Folder/File tree
 - [x] Bulk actions
   - [x] Select/Unselect
@@ -38,6 +38,6 @@
     - [x] EXIF metadata
   - [x] Move
   - [x] Delete
-- [ ] Update save to happen on photo/person etc level and remove the app level button
+- [x] Update save to happen on photo/person etc level and remove the app level button
 - [ ] Edit: rotate images
 - [ ] Unannotated filter

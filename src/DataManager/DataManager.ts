@@ -122,7 +122,11 @@ export default class DataManager {
       this.#placesMap = places;
       this.#citiesMap = citiesMap;
 
-      this.#photoManager.initialize({ currentDirectory, data: dataPhotos, imagePaths });
+      this.#photoManager.initialize({
+        currentDirectory,
+        data: dataPhotos,
+        imagePaths,
+      });
       this.#peopleManager.initialize(dataPeople);
     }
   }

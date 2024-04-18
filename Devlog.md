@@ -1,6 +1,9 @@
 # Dev Log
 
 ## TODOS:
+- Add text field to add notes on photo collection?
+- Date photo collection updated?
+- Date each photo was updated?
 - Warn if importing duplicate image?
 - Build base64 string each time since someone may have replaced the photo
 - ✅ Remove the app level save button and update directly from photos/people etc
@@ -8,7 +11,7 @@
 - Date picker in bulk actions - Edit menu gets cut off
 - Error popovers in bulk actions - edits are buggy
 - ✅ Replace bulk actions dropdown with buttons
-- Filter to only unannotated?
+- ✅ Filter to only unannotated?
 - Sort directory tree alphabetically at each level
 - ~~Update filepaths to only store the filepath relative to the selected directory~~
   - ~~Append the directory to the photo filepath when you need to access the image~~

@@ -2,7 +2,7 @@ import Photo from 'DataManager/PhotoManager/Photo';
 import moment from 'moment';
 import { ReactElement } from 'react';
 import formatDateString from 'renderer/utils/formatDateString';
-import { AnyAll, OnBetween } from './PhotoGallerySearchFilterModal';
+import { AnnotationStatus, AnyAll, OnBetween } from './PhotoGallerySearchFilterModal';
 
 function searchTermFilter({
   cleanDescription,
@@ -50,6 +50,7 @@ function idsFilter({
 }
 
 export interface CurrentFilters {
+  annotationStatus: AnnotationStatus;
   searchTerm: string;
   searchTitles: boolean;
   searchDescriptions: boolean;
@@ -78,6 +79,7 @@ export default function PhotoFilter({
   photos,
 }: Props) {
   const {
+    annotationStatus,
     dateMode,
     endDate,
     peopleMode,
@@ -95,6 +97,7 @@ export default function PhotoFilter({
   } = currentFilters;
 
   const filteredPhotos = photos.filter((photo) => {
+    const { isAnnotated, userAnnotations } = photo;
     const {
       date: photoDate,
       description,
@@ -102,9 +105,15 @@ export default function PhotoFilter({
       place,
       tags: photoTags,
       title,
-    } = photo.userAnnotations;
+    } = userAnnotations;
 
     const appliedFilters = [];
+
+    if (annotationStatus !== 'all') {
+      appliedFilters.push(
+        annotationStatus === 'annotated' ? isAnnotated : !isAnnotated
+      );
+    }
 
     const cleanSearchTerm = searchTerm.trim().toLowerCase();
     if (cleanSearchTerm && (searchTitles || searchDescriptions)) {
@@ -188,6 +197,7 @@ export default function PhotoFilter({
       appliedFilters.push(place.city === selectedCity);
     }
 
+    // If any conditions are not satisfied the photo should not be included
     return !appliedFilters.some((result) => !result);
   });
 

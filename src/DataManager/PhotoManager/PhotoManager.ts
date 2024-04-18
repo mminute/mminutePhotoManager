@@ -18,6 +18,10 @@ export default class PhotoManager {
 
   photos: Photo[] = [];
 
+  constructor() {
+    this.#currentDirectory = '';
+  }
+
   initialize({
     currentDirectory,
     data,
