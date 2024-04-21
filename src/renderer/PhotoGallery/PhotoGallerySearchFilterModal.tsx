@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import DatePicker from 'gestalt-datepicker';
 import {
   Box,
@@ -16,9 +15,10 @@ import {
   TextField,
 } from 'gestalt';
 import { MaybeString } from 'DataManager/DataManager';
-import { GALLERY_TABS_Z_INDEX } from '../GalleryTabs';
-import VerticalFieldSet from './VerticalFieldset';
-import RadioButton from '../RadioButton';
+import { GALLERY_TABS_Z_INDEX } from '../components/GalleryTabs';
+import VerticalFieldSet from '../components/VerticalFieldset';
+import RadioButton from '../components/RadioButton';
+import ButtonsFieldRow from '../components/ButtonsFieldRow';
 
 /*
   Note on <ComboBox />:
@@ -28,22 +28,6 @@ import RadioButton from '../RadioButton';
 */
 
 const NoneLabel = { label: 'None', value: '' };
-
-function ButtonsFieldRow({
-  buttons,
-  field,
-}: {
-  buttons: ReactElement;
-  field: ReactElement | null;
-}) {
-  return (
-    <Box display="flex" direction="row">
-      <Column span={2}>{buttons}</Column>
-
-      {field && <Column span={10}>{field}</Column>}
-    </Box>
-  );
-}
 
 function PaddedDivider() {
   return (

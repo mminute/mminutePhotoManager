@@ -21,7 +21,7 @@
   - [ ] Sort table view
   - [x] Edit people
   - [x] Delete people
-  - [ ] Filter and search people
+  - [x] Filter and search people
 - [x] Filter and search photos
   - [x] Location
   - [x] Tags
@@ -40,4 +40,5 @@
   - [x] Delete
 - [x] Update save to happen on photo/person etc level and remove the app level button
 - [ ] Edit: rotate images
-- [ ] Unannotated filter
+- [x] Unannotated filter
+- [ ] Icon on unannotated photos

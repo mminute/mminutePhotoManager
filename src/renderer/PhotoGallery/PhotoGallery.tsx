@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -13,10 +13,10 @@ import {
 } from 'gestalt';
 import { PlaceType } from 'DataManager/DataManager';
 import Person from 'DataManager/PeopleManager/Person';
-import ElementUIStateController from 'renderer/ElementUIStateController';
+import ElementUIStateController from 'renderer/PhotoGallery/ElementUIStateController';
 import Photo from '../../DataManager/PhotoManager/Photo';
-import GalleryTabs, { GALLERY_TABS_Z_INDEX } from '../GalleryTabs';
-import routePaths from '../routePaths';
+import GalleryTabs, { GALLERY_TABS_Z_INDEX } from '../components/GalleryTabs';
+import { routePaths } from '../routePaths';
 import PhotoGallerySearchFilter from './PhotoGallerySearchFilter';
 
 type BulkSelectionHandler = (args: {

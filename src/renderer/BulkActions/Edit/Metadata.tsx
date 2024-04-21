@@ -1,6 +1,6 @@
 import { Box, Button, Fieldset, Flex, Heading, Text } from 'gestalt';
 import { useState } from 'react';
-import RadioButton from 'renderer/RadioButton';
+import RadioButton from 'renderer/components/RadioButton';
 
 interface Props {
   selectedIds: string[];
