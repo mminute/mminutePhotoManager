@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Tabs } from 'gestalt';
-import routePaths from './routePaths';
+import { routePaths } from '../routePaths';
 
 export const GALLERY_TABS_Z_INDEX = 1;
 

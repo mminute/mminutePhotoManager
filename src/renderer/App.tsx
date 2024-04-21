@@ -15,8 +15,8 @@ import PageWrapper from './PageWrapper/PageWrapper';
 import PhotoView from './PhotoView/PhotoView';
 import { CitiesMapType, PlaceType } from '../DataManager/DataManager';
 import PersonModal from './PersonModal';
-import PeopleView from './PeopleView';
-import { GALLERY_TABS_Z_INDEX } from './GalleryTabs';
+import PeopleView from './PeopleView/PeopleView';
+import { GALLERY_TABS_Z_INDEX } from './components/GalleryTabs';
 import buildFileTree, { DirectoryData } from './utils/buildFileTree';
 import BulkActions from './BulkActions/BulkActions';
 
