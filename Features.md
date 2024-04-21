@@ -18,7 +18,7 @@
   - [x] People
   - [x] Place
 - [x] View all people
-  - [ ] Sort table view
+  - [x] Sort table view
   - [x] Edit people
   - [x] Delete people
   - [x] Filter and search people
@@ -41,4 +41,4 @@
 - [x] Update save to happen on photo/person etc level and remove the app level button
 - [ ] Edit: rotate images
 - [x] Unannotated filter
-- [ ] Icon on unannotated photos
+- [x] Icon on unannotated photos

@@ -10,6 +10,7 @@ import {
   Mask,
   Masonry,
   TapArea,
+  Tooltip,
 } from 'gestalt';
 import { PlaceType } from 'DataManager/DataManager';
 import Person from 'DataManager/PeopleManager/Person';
@@ -90,6 +91,20 @@ function PhotoRep({
                 src={`data:image/jpg;base64,${data.base64}`}
               />
             </TapArea>
+
+            <Tooltip text={data.isAnnotated ? 'Annotated' : 'Unannotated'}>
+              <Box
+                padding={2}
+                marginStart={4}
+                marginBottom={4}
+                position="absolute"
+                left
+                bottom
+                zIndex={new FixedZIndex(GALLERY_TABS_Z_INDEX)}
+                rounding="circle"
+                color={data.isAnnotated ? 'successWeak' : 'errorBase'}
+              />
+            </Tooltip>
           </>
         )}
       </ElementUIStateController>
