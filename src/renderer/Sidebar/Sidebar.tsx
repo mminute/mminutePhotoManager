@@ -10,16 +10,18 @@ interface Props {
   activePath: string;
   currentDirectory: string;
   fileTree: DirectoryData[];
-  updateActivePath: (newPath: string) => void;
+  lastUpdated: number | null;
   unannotatedCount: number;
+  updateActivePath: (newPath: string) => void;
 }
 
 export default function Sidebar({
   activePath,
   currentDirectory,
   fileTree,
-  updateActivePath,
+  lastUpdated,
   unannotatedCount,
+  updateActivePath,
 }: Props) {
   const { pathname } = useLocation();
   const left = CollapsedSidebarRoutes.includes(pathname) ? -190 : 0;
@@ -28,6 +30,15 @@ export default function Sidebar({
   return (
     <div className="sidebar sidebar-transition" style={{ left: `${left}px` }}>
       <Flex direction="column" height="100vh">
+        {lastUpdated !== null && (
+          <Box marginBottom={2} paddingX={2}>
+            <Text size="100">Last updated:</Text>
+            <Text size="100">{`${new Date(
+              lastUpdated
+            ).toLocaleString()}`}</Text>
+          </Box>
+        )}
+
         {unannotatedCount > 0 && (
           <Box marginBottom={2} paddingX={2}>
             <Text size="100">{`Unannotated: ${unannotatedCount} photos`}</Text>

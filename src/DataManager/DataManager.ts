@@ -70,6 +70,7 @@ function pushUniquePlace(places: PlaceType[], newPlace: PlaceType) {
 interface InitialData {
   photos: Photo[];
   people: Person[];
+  lastUpdated: number;
 }
 
 export default class DataManager {
@@ -88,6 +89,8 @@ export default class DataManager {
 
   #citiesMap: CitiesMapType = {};
 
+  #lastUpdated: number | null = null;
+
   initialize({
     currentDirectory,
     data,
@@ -101,7 +104,9 @@ export default class DataManager {
     if (!this.#initialized) {
       this.#initialized = true;
 
-      const { photos: dataPhotos, people: dataPeople } = data;
+      const { photos: dataPhotos, people: dataPeople, lastUpdated } = data;
+
+      this.#lastUpdated = lastUpdated;
 
       let tags: string[] = [];
       const places: PlaceType[] = [];
@@ -152,7 +157,15 @@ export default class DataManager {
   }
 
   get state() {
-    return { photos: this.photos, people: this.people };
+    return {
+      photos: this.photos,
+      people: this.people,
+      lastUpdated: this.#lastUpdated,
+    };
+  }
+
+  get lastUpdated() {
+    return this.#lastUpdated;
   }
 
   updatePhoto(annotationData: PhotoUpdateData) {
@@ -254,5 +267,9 @@ export default class DataManager {
     );
 
     return { photos: photosToExport, people };
+  }
+
+  setLastUpdated() {
+    this.#lastUpdated = Date.now();
   }
 }
