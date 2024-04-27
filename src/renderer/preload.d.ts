@@ -15,6 +15,7 @@ declare global {
         deletePhotos(photoIds: string[]): void;
         exportPhotos(photoIds: string[], targetDirectory: string): void;
         moveFiles(photoIds: string[], targetDirectory: string): void;
+        openRecentDirectory(filepath: string): void;
         scrubExifData(
           photoIds: string[],
           locationsToScrub: 'image-files-only' | 'image-files-and-database'

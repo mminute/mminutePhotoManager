@@ -56,6 +56,72 @@ function handleSave() {
   fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
 }
 
+function handleDirectorySelected({
+  event,
+  selectedDirectory,
+}: {
+  event: Electron.IpcMainEvent;
+  selectedDirectory: string;
+}) {
+  currentDirectory = selectedDirectory;
+
+  pushToRecentDirectories(selectedDirectory);
+
+  recursiveReadDir(
+    // https://github.com/jergason/recursive-readdir
+    selectedDirectory,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_err: any, files: string[]) => {
+      const imagePaths = files.filter((fileName) =>
+        // TODO: Update regex if additional image types are acceptable
+        // Digital cameras typically produce .jpg, .raw, .tiff files
+        // Looks like you might be able to use .raw and .tiff by
+        // setting the 'src' to the file
+        /\.jpg$/.test(fileName.toLowerCase())
+      );
+
+      // Find the json file where annotated image data is stored
+      const targetFilepath = files.find((fileName) => {
+        return new RegExp(`${currentDirectory}/.*.photoManager$`).test(
+          fileName
+        );
+      });
+
+      let dataObject = { photos: [], people: [] };
+
+      if (targetFilepath) {
+        dataFilePath = targetFilepath;
+        const rawDataString = fs.readFileSync(targetFilepath).toString();
+        dataObject = JSON.parse(rawDataString);
+      } else {
+        const filepath = `${currentDirectory}/${path.basename(
+          currentDirectory
+        )}.photoManager`;
+
+        dataFilePath = filepath;
+
+        fs.writeFileSync(filepath, JSON.stringify(dataObject));
+      }
+
+      dataManager.initialize({
+        currentDirectory,
+        data: dataObject,
+        imagePaths,
+      });
+
+      event.reply(
+        actions.FILEPATHS_OBTAINED,
+        dataManager.photos,
+        dataManager.tags,
+        dataManager.placesMap,
+        dataManager.citiesMap,
+        dataManager.people,
+        currentDirectory
+      );
+    }
+  );
+}
+
 ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
   if (mainWindow) {
     dialog
@@ -69,66 +135,15 @@ ipcMain.on(actions.SELECT_DIRECTORY, (event) => {
         }
 
         const selectedDirectory = filePaths[0];
-        currentDirectory = selectedDirectory;
 
-        pushToRecentDirectories(selectedDirectory);
-
-        recursiveReadDir(
-          // https://github.com/jergason/recursive-readdir
-          selectedDirectory,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (_err: any, files: string[]) => {
-            const imagePaths = files.filter((fileName) =>
-              // TODO: Update regex if additional image types are acceptable
-              // Digital cameras typically produce .jpg, .raw, .tiff files
-              // Looks like you might be able to use .raw and .tiff by
-              // setting the 'src' to the file
-              /\.jpg$/.test(fileName.toLowerCase())
-            );
-
-            // Find the json file where annotated image data is stored
-            const targetFilepath = files.find((fileName) => {
-              return new RegExp(`${currentDirectory}/.*.photoManager$`).test(
-                fileName
-              );
-            });
-
-            let dataObject = { photos: [], people: [] };
-
-            if (targetFilepath) {
-              dataFilePath = targetFilepath;
-              const rawDataString = fs.readFileSync(targetFilepath).toString();
-              dataObject = JSON.parse(rawDataString);
-            } else {
-              const filepath = `${currentDirectory}/${path.basename(
-                currentDirectory
-              )}.photoManager`;
-
-              dataFilePath = filepath;
-
-              fs.writeFileSync(filepath, JSON.stringify(dataObject));
-            }
-
-            dataManager.initialize({
-              currentDirectory,
-              data: dataObject,
-              imagePaths,
-            });
-
-            event.reply(
-              actions.FILEPATHS_OBTAINED,
-              dataManager.photos,
-              dataManager.tags,
-              dataManager.placesMap,
-              dataManager.citiesMap,
-              dataManager.people,
-              currentDirectory
-            );
-          }
-        );
+        handleDirectorySelected({ event, selectedDirectory });
       })
       .catch(() => {});
   }
+});
+
+ipcMain.on(actions.OPEN_RECENT_DIRECTORY, (event, selectedDirectory) => {
+  handleDirectorySelected({ event, selectedDirectory });
 });
 
 ipcMain.on(actions.SELECT_EXPORT_DIRECTORY, (event) => {
@@ -346,6 +361,12 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
+
+    mainWindow.webContents.send(
+      actions.INITIALIZE_PHOTO_MANAGER,
+      localStore.get(RecentDirectoriesKey)
+    );
+
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
     } else {

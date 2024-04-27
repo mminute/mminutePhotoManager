@@ -1,6 +1,6 @@
 # Features
 - [x] Select a directory
-  - [ ] Remember past directory selections for quick select
+  - [x] Remember past directory selections for quick select
 - [x] View photos in the directory
 - [x] View a photo
   - [x] View photo metadata
