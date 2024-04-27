@@ -30,6 +30,7 @@ interface State {
   currentDirectory: string;
   currentModal: null | 'create-person' | 'edit-person' | 'bulk-actions';
   fileTree: DirectoryData[];
+  lastUpdated: number | null;
   people: Person[];
   photos: Photo[];
   placesMap: PlaceType[];
@@ -49,6 +50,7 @@ export default class App extends React.Component<Props, State> {
       currentDirectory: '',
       currentModal: null,
       fileTree: [],
+      lastUpdated: null,
       people: [],
       photos: [],
       placesMap: [],
@@ -172,12 +174,14 @@ export default class App extends React.Component<Props, State> {
     placesMap: PlaceType[],
     citiesMap: Record<string, Record<string, string[]>>,
     people: Person[],
-    currentDirectory: string
+    currentDirectory: string,
+    lastUpdated: number
   ) => {
     this.setState({
       activePath: currentDirectory,
       currentDirectory,
       fileTree: buildFileTree(photos, currentDirectory),
+      lastUpdated,
     });
     this.handlePhotosObtained(photos, tags, placesMap, citiesMap, people);
   };
@@ -259,6 +263,7 @@ export default class App extends React.Component<Props, State> {
       currentDirectory,
       currentModal,
       fileTree,
+      lastUpdated,
       people,
       photos,
       placesMap,
@@ -288,6 +293,7 @@ export default class App extends React.Component<Props, State> {
             currentDirectory={currentDirectory}
             fileTree={fileTree}
             unannotatedCount={unannotatedCount}
+            lastUpdated={lastUpdated}
           />
           <PageWrapper>
             <Routes>

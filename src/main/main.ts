@@ -53,6 +53,7 @@ function pushToRecentDirectories(newDirectory: string) {
 }
 
 function handleSave() {
+  dataManager.setLastUpdated();
   fs.writeFileSync(dataFilePath, JSON.stringify(dataManager.state));
 }
 
@@ -87,7 +88,7 @@ function handleDirectorySelected({
         );
       });
 
-      let dataObject = { photos: [], people: [] };
+      let dataObject = { photos: [], people: [], lastUpdated: Date.now() };
 
       if (targetFilepath) {
         dataFilePath = targetFilepath;
@@ -116,7 +117,8 @@ function handleDirectorySelected({
         dataManager.placesMap,
         dataManager.citiesMap,
         dataManager.people,
-        currentDirectory
+        currentDirectory,
+        dataManager.lastUpdated
       );
     }
   );
