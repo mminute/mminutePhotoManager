@@ -14,10 +14,13 @@
 - ✅ Replace bulk actions dropdown with buttons
 - ✅ Filter to only unannotated?
 - Sort directory tree alphabetically at each level
-- ~~Update filepaths to only store the filepath relative to the selected directory~~
-  - ~~Append the directory to the photo filepath when you need to access the image~~
-  - ~~This way the directory can be moved without causing issues with the data~~
+- Update filepaths to only store the filepath relative to the selected directory
+  - Append the directory to the photo filepath when you need to access the image
+  - This way the directory can be moved without causing issues with the data
 - ✅ Instead of updating file path to be relative I'm going to be lazy and add an attribute to the `Photo()` that is just the relative path when each object is instantiated
+
+### 2024-04-26
+- Completed all the features in [[Features.md]]
 
 ### 2024-04-11
 - Finished export functionality -> exporting image and data to a new folder

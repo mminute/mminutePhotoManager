@@ -2,7 +2,7 @@ import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { Box, CompositeZIndex, FixedZIndex, Flex, Layer, Toast } from 'gestalt';
 import Person from '../DataManager/PeopleManager/Person';
-import Splash from './Splash';
+import Splash from './Splash/Splash';
 import 'gestalt/dist/gestalt.css';
 import './App.css';
 import './Toast.css';
@@ -33,6 +33,7 @@ interface State {
   people: Person[];
   photos: Photo[];
   placesMap: PlaceType[];
+  recentDirectories: string[];
   tags: string[];
   toastText: string | null;
 }
@@ -51,12 +52,18 @@ export default class App extends React.Component<Props, State> {
       people: [],
       photos: [],
       placesMap: [],
+      recentDirectories: [],
       tags: [],
       toastText: null,
     };
   }
 
   componentDidMount() {
+    window.electron.ipcRenderer.on(
+      actions.INITIALIZE_PHOTO_MANAGER,
+      this.handleInventoryInitialized
+    );
+
     window.electron.ipcRenderer.on(
       actions.FILEPATHS_OBTAINED,
       this.handleFilepathsObtained
@@ -155,6 +162,10 @@ export default class App extends React.Component<Props, State> {
     );
   }
 
+  handleInventoryInitialized = (recentDirectories: string[]) => {
+    this.setState({ recentDirectories });
+  };
+
   handleFilepathsObtained = (
     photos: Photo[],
     tags: string[],
@@ -251,6 +262,7 @@ export default class App extends React.Component<Props, State> {
       people,
       photos,
       placesMap,
+      recentDirectories,
       tags,
       toastText,
     } = this.state;
@@ -279,7 +291,10 @@ export default class App extends React.Component<Props, State> {
           />
           <PageWrapper>
             <Routes>
-              <Route path={routePaths.SPLASH} element={<Splash />} />
+              <Route
+                path={routePaths.SPLASH}
+                element={<Splash recentDirectories={recentDirectories} />}
+              />
               <Route
                 path={routePaths.PHOTOS}
                 element={
