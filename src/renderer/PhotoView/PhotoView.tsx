@@ -73,7 +73,7 @@ export default function PhotoView({
     window.electron.ipcRenderer.updatePhotoData(annotationData);
   };
 
-  const { height, width, userAnnotations } = photo;
+  const { height, width, userAnnotations, lastUpdated } = photo;
 
   const SelectedComp = Comps[tabIndex];
 
@@ -183,6 +183,7 @@ export default function PhotoView({
                   cityName={cityName}
                   countrySearchTerm={countrySearchTerm}
                   description={description}
+                  lastUpdated={lastUpdated}
                   onShowModal={onShowModal}
                   onUpdate={() => {}}
                   people={people}

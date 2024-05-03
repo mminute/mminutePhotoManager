@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Divider, Flex, TextArea, TextField } from 'gestalt';
+import { Box, Divider, Flex, Text, TextArea, TextField } from 'gestalt';
 import DatePicker from 'gestalt-datepicker';
 import { ShowModalType } from 'renderer/types';
 import Person from 'DataManager/PeopleManager/Person';
@@ -29,7 +29,9 @@ interface Props {
   cityName: string;
   countrySearchTerm: string;
   description: string;
+  lastUpdated: number | undefined;
   onShowModal: ShowModalType;
+  onUpdate: (hasErrors: OnUpdateArgs) => void;
   people: Person[];
   photo: Photo;
   placeName: string;
@@ -60,7 +62,6 @@ interface Props {
   stateSearchTerm: string;
   tags: string[];
   title: string;
-  onUpdate: (hasErrors: OnUpdateArgs) => void;
 }
 
 export default function UserAnnotationDisplay({
@@ -69,6 +70,7 @@ export default function UserAnnotationDisplay({
   cityName,
   countrySearchTerm,
   description,
+  lastUpdated,
   onShowModal,
   people,
   photo,
@@ -148,8 +150,14 @@ export default function UserAnnotationDisplay({
   ) : undefined;
 
   return (
-    <Box marginBottom={12}>
+    <Box marginBottom={12} marginTop={4}>
       <Flex direction="column" gap={4}>
+        {lastUpdated && (
+          <Text size="100">
+            Last updated: {new Date(lastUpdated).toLocaleString()}
+          </Text>
+        )}
+
         <TextField
           id="title"
           onChange={({ value }) => {
