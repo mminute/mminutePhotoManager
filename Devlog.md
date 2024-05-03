@@ -3,7 +3,7 @@
 ## TODOS:
 - Add text field to add notes on photo collection?
 - ✅ Date photo collection updated?
-- Date each photo was updated?
+- ✅ Date each photo was updated?
 - Warn if importing duplicate image?
 - Build base64 string each time since someone may have replaced the photo
 - Annotated/Unannotated tooltip positioned kinda far away
