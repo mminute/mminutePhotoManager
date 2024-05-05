@@ -23,6 +23,8 @@ export const actions = {
   SELECT_MOVE_TARGET_FAILURE: 'select-move-target-failure',
   SELECT_MOVE_TARGET_SUCCESS: 'select-move-target-success',
   SELECT_MOVE_TARGET: 'select-move-target',
+  UPDATE_COLLECTION_NOTES_SUCCESS: 'update-collection-notes-success',
+  UPDATE_COLLECTION_NOTES: 'update-collection-notes',
   UPDATE_PERSON_SUCCESS: 'update-person-success',
   UPDATE_PERSON: 'update-person',
   UPDATE_PHOTO_DATA_COMPLETE: 'update-photo-data-complete',

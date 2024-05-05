@@ -1,12 +1,11 @@
-import * as path from 'path';
 import { LocationType } from 'renderer/BulkActions/Edit/Metadata';
+import { OnUpdateArgs } from 'renderer/BulkActions/Edit/Annotations';
 import Photo from './PhotoManager/Photo';
 import PhotoManager from './PhotoManager/PhotoManager';
 import UserAnnotationPlace from './PhotoManager/UserAnnotationPlace';
 import { PhotoUpdateData } from '../renderer/PhotoView/types';
 import PeopleManager, { NewPersonData } from './PeopleManager/PeopleManager';
 import Person from './PeopleManager/Person';
-import { OnUpdateArgs } from 'renderer/BulkActions/Edit/Annotations';
 import UserAnnotationData from './PhotoManager/UserAnnotationData';
 
 export type MaybeString = string | null;
@@ -71,6 +70,7 @@ interface InitialData {
   photos: Photo[];
   people: Person[];
   lastUpdated: number;
+  collectionNotes: string;
 }
 
 export default class DataManager {
@@ -91,6 +91,8 @@ export default class DataManager {
 
   #lastUpdated: number | null = null;
 
+  #collectionNotes: string = '';
+
   initialize({
     currentDirectory,
     data,
@@ -104,9 +106,15 @@ export default class DataManager {
     if (!this.#initialized) {
       this.#initialized = true;
 
-      const { photos: dataPhotos, people: dataPeople, lastUpdated } = data;
+      const {
+        collectionNotes,
+        photos: dataPhotos,
+        people: dataPeople,
+        lastUpdated,
+      } = data;
 
       this.#lastUpdated = lastUpdated;
+      this.#collectionNotes = collectionNotes;
 
       let tags: string[] = [];
       const places: PlaceType[] = [];
@@ -161,11 +169,24 @@ export default class DataManager {
       photos: this.photos,
       people: this.people,
       lastUpdated: this.#lastUpdated,
+      collectionNotes: this.#collectionNotes,
     };
   }
 
   get lastUpdated() {
     return this.#lastUpdated;
+  }
+
+  setLastUpdated() {
+    this.#lastUpdated = Date.now();
+  }
+
+  setCollectionNotes(collectionNotes: string) {
+    this.#collectionNotes = collectionNotes;
+  }
+
+  get collectionNotes() {
+    return this.#collectionNotes;
   }
 
   updatePhoto(annotationData: PhotoUpdateData) {
@@ -267,9 +288,5 @@ export default class DataManager {
     );
 
     return { photos: photosToExport, people };
-  }
-
-  setLastUpdated() {
-    this.#lastUpdated = Date.now();
   }
 }

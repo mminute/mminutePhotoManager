@@ -54,6 +54,9 @@ contextBridge.exposeInMainWorld('electron', {
     updatePhotoData(annotationData: PhotoUpdateData) {
       ipcRenderer.send('update-photo-data', annotationData);
     },
+    updateCollectionNote(note: string) {
+      ipcRenderer.send('update-collection-notes', note);
+    },
     on(channel: string, func: (...args: unknown[]) => void) {
       const subscription = (_event: IpcRendererEvent, ...args: unknown[]) =>
         func(...args);

@@ -1,7 +1,8 @@
 # Dev Log
 
 ## TODOS:
-- Add text field to add notes on photo collection?
+- Update base64 string if the file last modified time is sooner than the last time the photo collection was updated [stack overflow](https://stackoverflow.com/questions/7559555/last-modified-file-date-in-node-js)
+- ✅ Add text field to add notes on photo collection?
 - ✅ Date photo collection updated?
 - ✅ Date each photo was updated?
 - Warn if importing duplicate image?
