@@ -88,7 +88,12 @@ function handleDirectorySelected({
         );
       });
 
-      let dataObject = { photos: [], people: [], lastUpdated: Date.now() };
+      let dataObject = {
+        photos: [],
+        people: [],
+        lastUpdated: Date.now(),
+        collectionNotes: '',
+      };
 
       if (targetFilepath) {
         dataFilePath = targetFilepath;
@@ -118,7 +123,8 @@ function handleDirectorySelected({
         dataManager.citiesMap,
         dataManager.people,
         currentDirectory,
-        dataManager.lastUpdated
+        dataManager.lastUpdated,
+        dataManager.collectionNotes
       );
     }
   );
@@ -305,6 +311,12 @@ ipcMain.on(actions.MOVE_FILES, (event, photoIds, targetDirectory) => {
     dataManager.citiesMap,
     dataManager.people
   );
+});
+
+ipcMain.on(actions.UPDATE_COLLECTION_NOTES, (event, notes: string) => {
+  dataManager.setCollectionNotes(notes);
+  handleSave();
+  event.reply(actions.UPDATE_COLLECTION_NOTES_SUCCESS, notes);
 });
 
 if (process.env.NODE_ENV === 'production') {

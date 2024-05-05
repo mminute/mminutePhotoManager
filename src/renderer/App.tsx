@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { Box, CompositeZIndex, FixedZIndex, Flex, Layer, Toast } from 'gestalt';
+import { Box, CompositeZIndex, FixedZIndex, Layer, Toast } from 'gestalt';
 import Person from '../DataManager/PeopleManager/Person';
 import Splash from './Splash/Splash';
 import 'gestalt/dist/gestalt.css';
@@ -19,6 +19,7 @@ import PeopleView from './PeopleView/PeopleView';
 import { GALLERY_TABS_Z_INDEX } from './components/GalleryTabs';
 import buildFileTree, { DirectoryData } from './utils/buildFileTree';
 import BulkActions from './BulkActions/BulkActions';
+import CollectionNotesModal from './CollectionNotesModal';
 
 interface Props {}
 interface State {
@@ -27,8 +28,14 @@ interface State {
   activePhotoId: string | null;
   bulkSelections: string[];
   citiesMap: CitiesMapType;
+  collectionNotes: string | null;
   currentDirectory: string;
-  currentModal: null | 'create-person' | 'edit-person' | 'bulk-actions';
+  currentModal:
+    | 'bulk-actions'
+    | 'create-person'
+    | 'edit-notes'
+    | 'edit-person'
+    | null;
   fileTree: DirectoryData[];
   lastUpdated: number | null;
   people: Person[];
@@ -47,6 +54,7 @@ export default class App extends React.Component<Props, State> {
       activePhotoId: null,
       bulkSelections: [],
       citiesMap: {},
+      collectionNotes: null,
       currentDirectory: '',
       currentModal: null,
       fileTree: [],
@@ -115,6 +123,11 @@ export default class App extends React.Component<Props, State> {
       actions.EXPORT_PHOTOS_SUCCESS,
       this.handleExportSuccess
     );
+
+    window.electron.ipcRenderer.on(
+      actions.UPDATE_COLLECTION_NOTES_SUCCESS,
+      this.handleCollectionNotesUpdated
+    );
   }
 
   componentWillUnmount() {
@@ -162,6 +175,11 @@ export default class App extends React.Component<Props, State> {
       actions.EXPORT_PHOTOS_SUCCESS,
       this.handleExportSuccess
     );
+
+    window.electron.ipcRenderer.removeListener(
+      actions.UPDATE_COLLECTION_NOTES_SUCCESS,
+      this.handleCollectionNotesUpdated
+    );
   }
 
   handleInventoryInitialized = (recentDirectories: string[]) => {
@@ -175,13 +193,15 @@ export default class App extends React.Component<Props, State> {
     citiesMap: Record<string, Record<string, string[]>>,
     people: Person[],
     currentDirectory: string,
-    lastUpdated: number
+    lastUpdated: number,
+    collectionNotes: string
   ) => {
     this.setState({
       activePath: currentDirectory,
       currentDirectory,
       fileTree: buildFileTree(photos, currentDirectory),
       lastUpdated,
+      collectionNotes,
     });
     this.handlePhotosObtained(photos, tags, placesMap, citiesMap, people);
   };
@@ -253,6 +273,10 @@ export default class App extends React.Component<Props, State> {
     this.setState({ bulkSelections: updatedData });
   };
 
+  handleCollectionNotesUpdated = (notes: string) => {
+    this.setState({ collectionNotes: notes });
+  };
+
   render() {
     const {
       activePath,
@@ -260,6 +284,7 @@ export default class App extends React.Component<Props, State> {
       activePhotoId,
       bulkSelections,
       citiesMap,
+      collectionNotes,
       currentDirectory,
       currentModal,
       fileTree,
@@ -294,6 +319,8 @@ export default class App extends React.Component<Props, State> {
             fileTree={fileTree}
             unannotatedCount={unannotatedCount}
             lastUpdated={lastUpdated}
+            collectionNotes={collectionNotes}
+            onEditNotes={() => this.setState({ currentModal: 'edit-notes' })}
           />
           <PageWrapper>
             <Routes>
@@ -388,6 +415,13 @@ export default class App extends React.Component<Props, State> {
                 selectedPhotos={photos.filter((p) =>
                   bulkSelections.includes(p.filePath)
                 )}
+              />
+            )}
+
+            {currentModal === 'edit-notes' && (
+              <CollectionNotesModal
+                onDismiss={() => this.setState({ currentModal: null })}
+                currentNotes={collectionNotes}
               />
             )}
           </Layer>

@@ -25,6 +25,7 @@ declare global {
         selectMoveTarget(): void;
         updatePerson(personUpdates: NewPersonData): void;
         updatePhotoData(updatedData: PhotoUpdateData): void;
+        updateCollectionNote(note: string): void;
         on(
           channel: string,
           func: (...args: unknown[]) => void
